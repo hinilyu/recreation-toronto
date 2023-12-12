@@ -17,7 +17,7 @@ const DropinProgramDialog = ({ open, handleClose, program }) => {
   //handle map
   var center = {};
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyAx_pD0Gw95x3Mwak1T2Pi9hum_QsXWlsA",
+    googleMapsApiKey: process.env.MAPS_API_KEY,
   });
   if (locationDetails) {
     center = { lat: locationDetails.Coordinates[1], lng: locationDetails.Coordinates[0] };
