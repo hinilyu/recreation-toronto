@@ -2,6 +2,7 @@ import "@styles/globals.css";
 import Nav from "@components/Nav";
 import Provider from "@components/Provider";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata = {
   title: "Recreation Toronto",
@@ -22,6 +23,8 @@ const RootLayout = ({ children }) => {
             {children}
           </main>
         </Provider>
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
