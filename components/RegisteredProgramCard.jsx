@@ -13,37 +13,7 @@ import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import { useState } from "react";
 import { useEffect } from "react";
 
-import PropTypes from "prop-types";
-
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
 import RegisteredProgramDialog from "./RegisteredProgramDialog/RegisteredProgramDialog";
-
-function CustomTabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-CustomTabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
 
 const ProgramCard = ({ program }) => {
   // Control Dialog
@@ -60,8 +30,8 @@ const ProgramCard = ({ program }) => {
 
   const [programs, setPrograms] = useState([]);
 
-  const fetchPrograms = async ({ title }) => {
-    const response = await fetch(`api/programs/registered/${program.title}`);
+  const fetchPrograms = async () => {
+    const response = await fetch(`api/programs/registered/${encodeURIComponent(program.title)}`);
     const data = await response.json();
     console.log(data);
     setPrograms(data);
@@ -69,7 +39,7 @@ const ProgramCard = ({ program }) => {
 
   useEffect(() => {
     if (open) {
-      fetchPrograms(program.title);
+      fetchPrograms();
     }
   }, [open]);
 

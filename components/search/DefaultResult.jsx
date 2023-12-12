@@ -41,7 +41,7 @@ const DropinProgramList = ({ data }) => {
   }
 };
 
-const DropinProgramNearbyList = ({ data, position, useCurrentLocation }) => {
+const DropinProgramNearbyList = ({ data, useCurrentLocation }) => {
   if (useCurrentLocation === false || !navigator.geolocation) {
     return <div className="my-10 font-satoshi text-center">Please allow sharing your location</div>;
   }
@@ -61,86 +61,16 @@ const DropinProgramNearbyList = ({ data, position, useCurrentLocation }) => {
   }
 };
 
-const DefaultResult = () => {
-  const [registeredPrograms, setRegisteredPrograms] = useState([]);
-  const [dropPrograms, setDropPrograms] = useState([]);
-  const [useCurrentLocation, setUseCurrentLocation] = useState();
-  const [position, setPosition] = useState([]);
-  const [loadingPosition, setLoadingPosition] = useState(false);
-
-  // fetch
-  const fetchRegisteredPrograms = async () => {
-    const response = await fetch("/api/programs/registered");
-    const data = await response.json();
-    console.log(data);
-    if (data.length > 0) {
-      setRegisteredPrograms(data);
-    } else {
-      setRegisteredPrograms("error");
-    }
-  };
-
-  const fetchDropinPrograms = async () => {
-    try {
-      const response = await fetch(`/api/programs/dropin`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          useCurrentLocation: sessionStorage.getItem("useCurrentLocation"),
-          lat: position[0],
-          lng: position[1],
-        }),
-      });
-
-      const data = await response.json();
-      console.log(data);
-      setDropPrograms(data);
-    } catch (error) {
-      setDropPrograms("error");
-    }
-  };
-
-  // Getting Geolocation
-  const successCallback = async (position) => {
-    const { latitude, longitude } = await position.coords;
-    sessionStorage.setItem("position", JSON.stringify([latitude, longitude]));
-    setPosition([latitude, longitude]);
-    setLoadingPosition(false);
-  };
-
-  const errorCallback = (error) => {
-    alert("We are having trouble getting your location. Please try again.");
-    setUseCurrentLocation(false);
-  };
-
+const DefaultResult = ({ registeredPrograms, dropPrograms, parentSetUseCurrentLocation, useCurrentLocation, loadingPosition, parentSetPosition }) => {
   // When starting app
   useEffect(() => {
-    const position = JSON.parse(sessionStorage.getItem("position"));
+    const sessionPosition = JSON.parse(sessionStorage.getItem("position"));
 
-    if (position) {
-      setPosition(position);
-      setUseCurrentLocation(true);
+    if (sessionPosition) {
+      parentSetPosition(sessionPosition);
+      parentSetUseCurrentLocation(true);
     }
-
-    fetchRegisteredPrograms();
   }, []);
-
-  // Reload program after position changed
-  useEffect(() => {
-    fetchDropinPrograms();
-  }, [position]);
-
-  // When user allow using geolocation
-  useEffect(() => {
-    if (useCurrentLocation === true) {
-      if (!sessionStorage.getItem("position")) {
-        navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
-        setLoadingPosition(true);
-      }
-    }
-  }, [useCurrentLocation]);
 
   return (
     <section className="mt-3">
@@ -171,7 +101,7 @@ const DefaultResult = () => {
           <Button
             className="text-xs"
             onClick={() => {
-              setUseCurrentLocation(true);
+              parentSetUseCurrentLocation(true);
               sessionStorage.setItem("useCurrentLocation", JSON.stringify(true));
             }}
           >
@@ -180,7 +110,11 @@ const DefaultResult = () => {
         )}
       </h1>
       <div className="sm:h-[500px] h-[250px] overflow-y-auto mt-3">
-        {useCurrentLocation ? <DropinProgramNearbyList data={dropPrograms} position={position} /> : <DropinProgramList data={dropPrograms} />}
+        {useCurrentLocation ? (
+          <DropinProgramNearbyList data={dropPrograms} useCurrentLocation={useCurrentLocation} />
+        ) : (
+          <DropinProgramList data={dropPrograms} />
+        )}
       </div>
     </section>
   );

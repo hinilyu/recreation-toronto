@@ -12,7 +12,7 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 export async function POST(req, res) {
-  const { lat, lng, useCurrentLocation } = await req.json();
+  const { lat, lng, useCurrentLocation, all } = await req.json();
 
   await connectToDB();
 
@@ -46,7 +46,6 @@ export async function POST(req, res) {
             "Start Date Time": { $gte: today.toJSON(), $lt: weeklater.toJSON() },
           },
         },
-        { $sample: { size: 20 } },
         {
           $lookup: {
             from: "locations", // Adjust the collection name if needed

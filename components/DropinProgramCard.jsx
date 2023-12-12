@@ -12,45 +12,8 @@ import MusicNoteIcon from "@mui/icons-material/MusicNote";
 
 import { useState } from "react";
 import { useEffect } from "react";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import IconButton from "@mui/material/IconButton";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import DialogTitle from "@mui/material/DialogTitle";
-import PropTypes from "prop-types";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
 
-function CustomTabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-CustomTabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
+import DropinProgramDialog from "./DropinProgramDialog/DropinProgramDialog";
 
 const ProgramCard = ({ program }) => {
   // handle datetime
@@ -70,27 +33,6 @@ const ProgramCard = ({ program }) => {
     setOpen(false);
   };
 
-  // Control Tab
-  const [value, setValue] = useState(0);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const [programs, setPrograms] = useState([]);
-
-  const fetchPrograms = async ({ title }) => {
-    const response = await fetch(`api/programs/registered/${program.title}`);
-    const data = await response.json();
-    console.log(data);
-    setPrograms(data);
-  };
-
-  useEffect(() => {
-    if (open) {
-      fetchPrograms(program.title);
-    }
-  }, [open]);
 
   var icon = "";
   if (program.Category === "Swimming") {
@@ -113,6 +55,8 @@ const ProgramCard = ({ program }) => {
     icon = <MusicNoteIcon style={{ color: "SlateBlue" }} />;
   }
 
+  const today = new Date();
+
   return (
     <div className="program_card hover:cursor-pointer hover:bg-slate-200" onClick={handleClickOpen}>
       <div className="flex justify-between items-start gap-5">
@@ -127,11 +71,19 @@ const ProgramCard = ({ program }) => {
       <h1 className="font-inter text-lg font-semibold mt-2 line-clamp-2">{program["Course Title"]}</h1>
       <h2 className="font-inter text-xs ">{program.locationDetails[0] ? program.locationDetails[0]["Asset Name"] : ""}</h2>
       <h2 className="font-inter text-sm mt-3">
-        {weekday[datetime.getDay()]}, {month[datetime.getMonth()]} {datetime.getDate()}
+        {today.getDate() == datetime.getDate() && today.getMonth() === datetime.getMonth() ? (
+          <div>Today</div>
+        ) : (
+          <div>
+            {weekday[datetime.getDay()]}, {month[datetime.getMonth()]} {datetime.getDate()}
+          </div>
+        )}
       </h2>
-      <h2 className="font-inter text-md mt-1">
+      <h2 className="font-inter text-md mt-1 font-semibold">
         {datetime.getHours()}:{datetime.getMinutes() < 10 ? <span>0{datetime.getMinutes()}</span> : <span>{datetime.getMinutes()}</span>}
       </h2>
+
+      <DropinProgramDialog open={open} handleClose={handleClose} program={program} />
     </div>
   );
 };

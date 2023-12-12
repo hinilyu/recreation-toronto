@@ -1,6 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import ShowCalendar from "./ShowCalendar";
+import ShowLocation from "./ShowLocation";
+import ProgramList from "./ProgramList";
 
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -11,55 +15,53 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
 
-const steps = ["Location", "Day of Week", "Date & Time"];
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 const RegisteredProgramDialog = ({ open, handleClose, program, programs }) => {
-  // Stepper
-  const [activeStep, setActiveStep] = useState(0);
-  const [skipped, setSkipped] = useState(new Set());
+  // handle show tab
+  const [showSection, setShowSection] = useState("calendar");
 
-  const isStepOptional = (step) => {
-    return step === 99;
+  // check if programs are loaded
+  const [programLoaded, setProgramLoaded] = useState(false);
+
+  // handle data from ShowLocation
+  const [locationID, setLocationID] = useState("");
+
+  const handleCallback = (childData) => {
+    setLocationID(childData);
+    setShowSection("list");
   };
 
-  const isStepSkipped = (step) => {
-    return skipped.has(step);
-  };
-
-  const handleNext = () => {
-    let newSkipped = skipped;
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
+  useEffect(() => {
+    if (programs.length > 0) {
+      setProgramLoaded(true);
     }
+  }, [programs]);
 
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped(newSkipped);
+  // handling data
+  const weekday = {
+    M: "Mondays",
+    Sa: "Saturdays",
+    Su: "Sundays",
+    F: "Fri",
+    Tu: "Tue",
+    W: "Wed",
+    "M, Tu, W, Th, F": "Weekdays",
+    Th: "Thu",
+    "W, Th, F": "Wed to Fri",
+    "Su, Sa": "Weekends",
+    "Tu, W, Th, F": "Tue to Fri",
+    "Su, M, Tu, W, Th, F, Sa": "Day",
+    "M, W, F": "Mon, Wed and Fri",
   };
+  var activityTitle = "";
 
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleSkip = () => {
-    if (!isStepOptional(activeStep)) {
-      // You probably want to guard against something like this,
-      // it should never occur unless someone's actively trying to break something.
-      throw new Error("You can't skip a step that isn't optional.");
-    }
-
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped((prevSkipped) => {
-      const newSkipped = new Set(prevSkipped.values());
-      newSkipped.add(activeStep);
-      return newSkipped;
-    });
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-  };
+  try {
+    activityTitle = programs[0].program["Activity Title"];
+  } catch {}
 
   return (
     <div>
@@ -80,14 +82,36 @@ const RegisteredProgramDialog = ({ open, handleClose, program, programs }) => {
         <div className="h-[85dvh] ">
           {/* Title and Description */}
           <div className="px-10">
-            <h1 className="font-inter font-semibold text-lg mt-20">{program.title}</h1>
+            <h1 className="font-inter font-light text-lg mt-20">{activityTitle}</h1>
+            <h1 className="font-inter font-bold text-xl ">{program.title}</h1>
             <h2 className="font-satoshi text-sm mt-2 ">{program.description}</h2>
           </div>
+          <Divider className="mt-4" />
           {/* Selector */}
-          <div className="flex w-full">
-            <button className="button">By Location</button>
-            <button className="button">By Date</button>
+          <div className="flex w-full justify-center mt-5">
+            <Button
+              className="mx-2 text-xs md:text-sm"
+              variant="outlined"
+              startIcon={<CalendarMonthIcon />}
+              onClick={() => setShowSection("calendar")}
+            >
+              By Program Start Date
+            </Button>
+            <Button
+              className="mx-2 text-xs md:text-sm"
+              variant="outlined"
+              disabled={!programLoaded}
+              startIcon={<LocationOnIcon />}
+              onClick={() => {
+                setShowSection("location");
+              }}
+            >
+              By Location
+            </Button>
           </div>
+          {showSection === "location" ? <ShowLocation programs={programs} parentCallback={handleCallback} /> : ""}
+          {showSection === "calendar" ? <ShowCalendar programs={programs} /> : ""}
+          {showSection === "list" ? <ProgramList locationID={locationID} programs={programs} /> : ""}
         </div>
       </Dialog>
     </div>
