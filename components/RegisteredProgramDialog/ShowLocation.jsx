@@ -6,7 +6,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 const ShowLocation = ({ programs, parentCallback }) => {
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyAx_pD0Gw95x3Mwak1T2Pi9hum_QsXWlsA",
+    googleMapsApiKey: process.env.NEXT_PUBLIC_MAPS_API_KEY,
   });
 
   const uniqueIds = new Set();

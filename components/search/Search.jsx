@@ -6,6 +6,7 @@ import SpecificSearchResult from "./SpecificSearchResult";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import Drawer from "@mui/material/Drawer";
 import CancelIcon from "@mui/icons-material/Cancel";
+import Link from "next/link";
 
 const Search = () => {
   const [registeredPrograms, setRegisteredPrograms] = useState([]);
@@ -126,12 +127,12 @@ const Search = () => {
     <section className="mt-3">
       <div className="relative w-full flex-center">
         <input type="text" placeholder="Quick Search on this page" value={searchText} onChange={handleSearchChange} className="search_input peer" />
-        <div
-          onClick={handleOpen}
+        <Link
+          href="/search"
           className="absolute right-5 bg-slate-100 hover:bg-slate-200 py-1 px-1.5 text-sm rounded font-inter font-semibold items-center inline-flex"
         >
-          Advanced Search
-        </div>
+          <div>Advanced Search</div>
+        </Link>
       </div>
 
       {/* Default Search Result */}
