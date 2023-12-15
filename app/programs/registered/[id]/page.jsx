@@ -18,11 +18,11 @@ const RegisteredProgramPage = ({ params }) => {
   const now = new Date();
 
   const handleRemind = () => {
-    if (regDate <= now) {
-      setErrorMsg("Program's registration period already started");
-      setOpenError(true);
-      return;
-    }
+    // if (regDate <= now) {
+    //   setErrorMsg("Program's registration period already started");
+    //   setOpenError(true);
+    //   return;
+    // }
     if (session?.user) {
       sendEmailRequest();
       setOpenSuccess(true);
