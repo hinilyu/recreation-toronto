@@ -108,7 +108,7 @@ const DropinProgramDialog = ({ open, handleClose, program }) => {
             {/* Link */}
             <Link target="_blank" href={`https://www.toronto.ca/data/parks/prd/facilities/complex/${locationDetails["Location ID"]}/index.html`}>
               <button className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded text-sm mt-5">
-                Official Website
+                Check Details on Official Website
               </button>
             </Link>
 

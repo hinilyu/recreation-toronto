@@ -9,6 +9,8 @@ import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
 import SportsGymnasticsIcon from "@mui/icons-material/SportsGymnastics";
 import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
+import DownhillSkiingIcon from "@mui/icons-material/DownhillSkiing";
+import NaturePeopleIcon from "@mui/icons-material/NaturePeople";
 
 import { useState } from "react";
 import { useEffect } from "react";
@@ -62,6 +64,10 @@ const ProgramCard = ({ program }) => {
     icon = <RestaurantMenuIcon style={{ color: "goldenrod" }} />;
   } else if (program.category === "Music") {
     icon = <MusicNoteIcon style={{ color: "SlateBlue" }} />;
+  } else if (program.category === "Ski") {
+    icon = <DownhillSkiingIcon style={{ color: "DodgerBlue" }} />;
+  } else if (program.category === "Camps") {
+    icon = <NaturePeopleIcon style={{ color: "MediumSeaGreen" }} />;
   }
 
   program.description = program.description.replace(/<br>/g, "");

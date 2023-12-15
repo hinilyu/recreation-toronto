@@ -67,7 +67,12 @@ const ShowCalendar = ({ programs }) => {
   useEffect(() => {
     const startDates = programs.map((program) => program.program["Start Date"]);
     const uniqueDates = [...new Set(startDates)];
-    const sortedUniqueDates = uniqueDates.sort((a, b) => new Date(a) - new Date(b)).map((dateString) => new Date(dateString));
+    const sortedUniqueDates = uniqueDates
+      .sort((a, b) => new Date(a) - new Date(b))
+      .map((dateString) => {
+        const date = new Date(dateString);
+        return date;
+      });
     setUniqueStartDates(sortedUniqueDates);
   }, [programs]);
 
@@ -79,24 +84,25 @@ const ShowCalendar = ({ programs }) => {
             <h1 className="w-full items-start text-left sm:ms-10 ms-5 mt-5 sm:text-lg text-md font-inter font-medium">Select program start date</h1>
           </div>
           <List className="p-5 font-satoshi font-light">
-            {uniqueStartDates.map((date, index) => (
-              <section key={index}>
-                {" "}
-                <ListItem disablePadding onClick={() => handleDateClick(date)}>
-                  <ListItemButton>
-                    {`${month[date.getMonth()]} ${date.getDate() + 1}, ${date.getFullYear()}`}
-                    {date < now ? (
-                      <button disabled className="border-red-300 border-2 rounded text-red-300 px-2 ms-5 text-xs sm:text-sm">
-                        Started
-                      </button>
-                    ) : (
-                      ""
-                    )}
-                  </ListItemButton>
-                </ListItem>
-                <Divider />
-              </section>
-            ))}
+            {uniqueStartDates.map((date, index) => {
+              return (
+                <section key={index}>
+                  <ListItem disablePadding onClick={() => handleDateClick(date)}>
+                    <ListItemButton>
+                      {`${month[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`}
+                      {date < now ? (
+                        <button disabled className="border-indigo-700 border-2 rounded text-indigo-700 px-2 ms-5 text-xs sm:text-sm">
+                          Started
+                        </button>
+                      ) : (
+                        ""
+                      )}
+                    </ListItemButton>
+                  </ListItem>
+                  <Divider />
+                </section>
+              );
+            })}
           </List>
         </div>
       ) : (
@@ -112,7 +118,7 @@ const ShowCalendar = ({ programs }) => {
           </div>
           <List className="p-5 font-satoshi font-light">
             {filteredPrograms.map((program, index) => (
-              <section>
+              <section key={index}>
                 <ListItem disablePadding key={program.program._id}>
                   <Link target="_blank" rel="noopener noreferrer" href={`/programs/registered/${program.program["Course_ID"]}`}>
                     <ListItemButton className="flex flex-col items-start">

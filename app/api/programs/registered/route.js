@@ -13,6 +13,14 @@ export const GET = async (request) => {
       const locations = await Location.findOne({ "Location ID": programs["Location ID"] });
 
       if (!programs) return new Response("Program not found", { status: 404 });
+      if (!locations) {
+        const result = {
+          ...programs.toObject(),
+          "Asset Name": "Please check on eFun",
+        };
+
+        return new Response(JSON.stringify(result), { status: 200 });
+      }
 
       const result = {
         ...programs.toObject(),

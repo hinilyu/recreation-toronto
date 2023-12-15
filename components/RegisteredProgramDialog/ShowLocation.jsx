@@ -39,8 +39,7 @@ const ShowLocation = ({ programs, parentCallback }) => {
           {programs.map((program) => {
             if (!program.location || !program.location._id) {
               // Skip rendering if location or _id is missing
-              alert("Error fetching data, please refresh the website");
-              return null;
+              return "Map function not available";
             }
             // Check if the ID is already seen, if yes, skip rendering
             if (uniqueIds.has(program.location._id)) {

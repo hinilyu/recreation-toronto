@@ -4,10 +4,76 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Paper from "@mui/material/Paper";
 import CircularProgress from "@mui/material/CircularProgress";
+import { Alert } from "@mui/material";
+import Snackbar from "@mui/material/Snackbar";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import { Fragment } from "react";
+import { useSession } from "next-auth/react";
 
 const RegisteredProgramPage = ({ params }) => {
   const [program, setProgram] = useState({});
   const [isLoaded, setIsLoaded] = useState(false);
+  const { data: session } = useSession();
+  const now = new Date();
+
+  const handleRemind = () => {
+    if (regDate <= now) {
+      setErrorMsg("Program's registration period already started");
+      setOpenError(true);
+      return;
+    }
+    if (session?.user) {
+      sendEmailRequest();
+      setOpenSuccess(true);
+      console.log(session.user);
+    } else {
+      setErrorMsg("You need to login first.");
+      setOpenError(true);
+    }
+  };
+
+  //Snackbar
+  const [openError, setOpenError] = useState(false);
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const vertical = "top";
+  const horizontal = "center";
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenError(false);
+    setOpenSuccess(false);
+  };
+
+  const action = (
+    <Fragment>
+      <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </Fragment>
+  );
+
+  // handle email registration
+  const sendEmailRequest = async () => {
+    try {
+      const response = await fetch("/api/reminder", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: session.user.email,
+          program: program,
+        }),
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const fetchProgram = async () => {
     const response = await fetch(`/api/programs/registered?id=${params.id}`);
@@ -25,9 +91,7 @@ const RegisteredProgramPage = ({ params }) => {
 
   // handle datetime
   const startDate = new Date(program["Start Date"]);
-  startDate.setDate(startDate.getDate() + 1);
   const regDate = new Date(program["Registration Date"]);
-  regDate.setDate(regDate.getDate() + 1);
   const nrregDate = new Date(regDate);
   nrregDate.setDate(regDate.getDate() + 10);
   const month = ["Jan", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -90,7 +154,7 @@ const RegisteredProgramPage = ({ params }) => {
             {status}
           </button>
           {/* Title */}
-          <h1 className="font-light text-xl md:mt-20 mt-10">{program["Activity Title"]}</h1>
+          <h1 className="font-light text-xl md:mt-12 mt-6">{program["Activity Title"]}</h1>
           <h1 className="font-bold text-3xl ">{program["Course Title"]}</h1>
           {/* Location */}
           <h3 className="md:text-lg text-sm bg-slate-200 hover:bg-slate-300 inline-block py-1 px-3 rounded mt-1">
@@ -107,10 +171,21 @@ const RegisteredProgramPage = ({ params }) => {
           <h3 className="text-lg">{`${program["Start Hour"]}:${startMin} - ${program["End Hour"]}:${endMin}`}</h3>
           {/* Link */}
           <Link href={program["eFun URL"]}>
-            <button className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded text-sm mt-5">
-              View on eFun
+            <button className="bg-blue-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-blue-700 rounded text-sm mt-5">
+              Register on eFun
             </button>
           </Link>
+          {regDate <= now ? (
+            ""
+          ) : (
+            <button
+              onClick={handleRemind}
+              className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded text-sm mt-5 ms-5"
+            >
+              Remind me to register
+            </button>
+          )}
+
           <div className="font-light leading-7">
             {/* Fee */}
             <h3 className="mt-10">
@@ -136,25 +211,34 @@ const RegisteredProgramPage = ({ params }) => {
             {/* Datetime */}
             <h3 className="mt-3">
               <span className="font-medium">Program Start Date: </span>
-              {`${month[startDate.getMonth()]} ${startDate.getDate()}, ${startDate.getFullYear()}`}
+              {`${month[startDate.getUTCMonth()]} ${startDate.getUTCDate()}, ${startDate.getUTCFullYear()}`}
             </h3>
             <h3 className="mt-3">
               <span className="font-medium">Registration Date: </span>
-              {`${month[regDate.getMonth()]} ${regDate.getDate()}, ${regDate.getFullYear()} 7:00AM`}
+              {`${month[regDate.getUTCMonth()]} ${regDate.getUTCDate()}, ${regDate.getUTCFullYear()} 7:00AM`}
             </h3>
             <h3>
-              {" "}
               <span className="font-medium">Non-Resident Registration Date: </span>
-              {`${month[nrregDate.getMonth()]} ${nrregDate.getDate()}, ${nrregDate.getFullYear()} 7:00AM`}
+              {`${month[nrregDate.getUTCMonth()]} ${nrregDate.getUTCDate()}, ${nrregDate.getUTCFullYear()} 7:00AM`}
             </h3>
 
-            <h3>
+            <h3 className="mt-3">
               <span className="font-medium">Spots Available:</span>
             </h3>
           </div>
           <br></br>
         </div>
       </Paper>
+      <Snackbar open={openError} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical, horizontal }} action={action}>
+        <Alert onClose={handleClose} severity="warning">
+          {errorMsg}
+        </Alert>
+      </Snackbar>
+      <Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical, horizontal }} action={action}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+          Program added to wishlist! Confirmation email sent.
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
