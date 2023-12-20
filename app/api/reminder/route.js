@@ -52,6 +52,8 @@ export const POST = async (req, res) => {
   regDate.setDate(regDate.getDate() + 1);
   const month = ["Jan", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
+  console.log(process.env.MAIL_USER);
+
   // send confirmation email
   const transporter = nodemailer.createTransport({
     service: "gmail",
