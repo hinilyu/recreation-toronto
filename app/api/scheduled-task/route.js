@@ -12,16 +12,31 @@ export async function GET(req) {
 
   const reminders = await Reminder.find();
 
-  reminders.forEach(async (reminder) => {
+  for (const reminder of reminders) {
     try {
-      // get program registration date
       const program = await RegisteredProgram.findOne({ Course_ID: reminder.program });
+
+      if (!program) {
+        console.error("Program not found for reminder:", reminder);
+        continue; // Skip to the next reminder if program is not found
+      }
+
       const regDate = new Date(program["Registration Date"]);
-      // get user email
+
+      if (!regDate) {
+        console.error("Invalid registration date for program:", program);
+        continue; // Skip to the next reminder if registration date is missing or invalid
+      }
+
       const user = await User.findById(reminder.user);
 
+      if (!user) {
+        console.error("User not found for reminder:", reminder);
+        continue; // Skip to the next reminder if user is not found
+      }
+
       // check if registration day is one day from today
-      const isOneDayBefore = regDate.getUTCDate() === now.getDate() - 1;
+      const isOneDayBefore = true;
 
       if (isOneDayBefore && reminder.status !== "reminded") {
         // if true, use nodemailer to send an email to remind the user of the registration
@@ -78,13 +93,13 @@ export async function GET(req) {
       }
 
       // mark the reminder status as reminded
-      reminder.status = "reminded";
-      await reminder.save();
+      // reminder.status = "reminded";
+      // await reminder.save();
     } catch (error) {
       console.error(error);
       return new Response(JSON.stringify(error), { status: 500 });
     }
-  });
+  }
 
   return new Response("All Email Sent", { status: 200 });
 }
