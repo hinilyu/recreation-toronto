@@ -85,6 +85,7 @@ export const POST = async (req, res) => {
     if (error) {
       console.log(error);
     } else {
+      console.log(`sent to ${email}`);
       return new Response("Success", { status: 200 });
     }
   });
