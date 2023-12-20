@@ -1,6 +1,7 @@
 import { connectToDB } from "@utils/database";
 import Reminder from "@models/reminder";
 import RegisteredProgram from "@models/registered_program";
+import User from "@models/user";
 
 export const POST = async (req, res) => {
   const { userID } = await req.json();
@@ -29,6 +30,14 @@ export const DELETE = async (req, res) => {
 
     if (!deletedReminder) {
       return new Response("Reminder not found", { status: 404 });
+    } else {
+      const user = await User.findOne({ email: email });
+
+      if (!user) {
+        return new Response("User does not exist", { status: 404 });
+      }
+      user.wishlist_count -= 1;
+      await user.save();
     }
 
     return new Response(JSON.stringify(deletedReminder), { status: 200 });

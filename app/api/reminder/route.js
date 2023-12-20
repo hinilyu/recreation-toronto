@@ -90,5 +90,5 @@ export const POST = async (req, res) => {
     }
   });
 
-  return new Response("Success", { status: 200 });
+  return new Response("Success", { status: 201 });
 };
