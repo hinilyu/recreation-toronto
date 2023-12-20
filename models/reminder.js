@@ -6,8 +6,7 @@ const ReminderSchema = new Schema({
     ref: "User",
   },
   program: {
-    type: Schema.Types.ObjectId,
-    ref: "RegisteredProgram",
+    type: Number,
   },
   status: {
     type: String,
@@ -16,4 +15,4 @@ const ReminderSchema = new Schema({
 
 const Reminder = models.Reminder || model("Reminder", ReminderSchema);
 
-export default User;
+export default Reminder;

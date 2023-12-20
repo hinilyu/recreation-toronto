@@ -29,7 +29,7 @@ const ShowLocation = ({ programs, parentCallback }) => {
   }, []);
 
   return (
-    <div className="w-full h-[80%] sm:p-10 p-3">
+    <div className="w-full h-[60%] sm:p-10 p-3">
       {!isLoaded && programs.length > 0 ? (
         <div className="flex justify-center">
           <CircularProgress />

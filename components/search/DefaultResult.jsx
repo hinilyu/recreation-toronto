@@ -75,7 +75,7 @@ const DefaultResult = ({ registeredPrograms, dropPrograms, parentSetUseCurrentLo
   return (
     <section className="mt-3">
       <h1 className="section_header">
-        Registered Program You May Like
+        Registered Programs You May Like
         <Tooltip
           className="ms-2"
           title="Search and register for a variety of programs including camps, swimming lessons, skating & hockey lessons, fitness classes, dances classes and much more."
@@ -83,11 +83,11 @@ const DefaultResult = ({ registeredPrograms, dropPrograms, parentSetUseCurrentLo
           <InfoIcon />
         </Tooltip>
       </h1>
-      <div className="sm:h-[500px] h-[250px] overflow-y-auto mt-3">
+      <div className="sm:h-[500px] h-[300px] overflow-y-auto mt-3">
         <RegisterProgramList data={registeredPrograms} />
       </div>
       <h1 className="section_header">
-        {useCurrentLocation ? "Drop-In Nearby" : "Drop-In Program You May Like"}
+        {useCurrentLocation ? "Drop-In Nearby" : "Drop-In Programs You May Like"}
         <Tooltip
           className="ms-2"
           title="The City of Toronto offers many activities and programs where you can drop in at the scheduled time without prior registration."
@@ -96,7 +96,17 @@ const DefaultResult = ({ registeredPrograms, dropPrograms, parentSetUseCurrentLo
         </Tooltip>
         {loadingPosition ? <CircularProgress size={20} className="ml-3" /> : <div></div>}
         {useCurrentLocation ? (
-          <div></div>
+          <Button
+            className="text-xs"
+            onClick={() => {
+              parentSetUseCurrentLocation(false);
+              parentSetPosition([]);
+              sessionStorage.setItem("useCurrentLocation", JSON.stringify(false));
+              sessionStorage.removeItem("position");
+            }}
+          >
+            Do Not Use Current Location
+          </Button>
         ) : (
           <Button
             className="text-xs"
@@ -109,7 +119,7 @@ const DefaultResult = ({ registeredPrograms, dropPrograms, parentSetUseCurrentLo
           </Button>
         )}
       </h1>
-      <div className="sm:h-[500px] h-[250px] overflow-y-auto mt-3">
+      <div className="sm:h-[500px] h-[300px] overflow-y-auto mt-3">
         {useCurrentLocation ? (
           <DropinProgramNearbyList data={dropPrograms} useCurrentLocation={useCurrentLocation} />
         ) : (

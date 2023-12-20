@@ -25,8 +25,6 @@ const RegisteredProgramPage = ({ params }) => {
     // }
     if (session?.user) {
       sendEmailRequest();
-      setOpenSuccess(true);
-      console.log(session.user);
     } else {
       setErrorMsg("You need to login first.");
       setOpenError(true);
@@ -70,9 +68,20 @@ const RegisteredProgramPage = ({ params }) => {
           program: program,
         }),
       });
-    } catch (error) {
-      console.log(error);
-    }
+      const data = response;
+      if (data.status === 400) {
+        setErrorMsg("Program already added to wishlist");
+        setOpenError(true);
+      } else if (data.status === 404) {
+        setErrorMsg("Error: Program not found / User does not exist");
+        setOpenError(true);
+      } else if (data.status === 200) {
+        setOpenSuccess(true);
+      } else if (data.status === 409) {
+        setErrorMsg("You have reached the maximum wishlist items. Delete some before subscribing to new ones.");
+        setOpenError(true);
+      }
+    } catch (error) {}
   };
 
   const fetchProgram = async () => {
@@ -80,7 +89,6 @@ const RegisteredProgramPage = ({ params }) => {
     const data = await response.json();
     setProgram(data);
     setIsLoaded(true);
-    console.log(data);
   };
 
   useEffect(() => {
@@ -234,12 +242,12 @@ const RegisteredProgramPage = ({ params }) => {
           <br></br>
         </div>
       </Paper>
-      <Snackbar open={openError} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical, horizontal }} action={action}>
+      <Snackbar open={openError} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical, horizontal }} action={action}>
         <Alert onClose={handleClose} severity="warning">
           {errorMsg}
         </Alert>
       </Snackbar>
-      <Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical, horizontal }} action={action}>
+      <Snackbar open={openSuccess} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical, horizontal }} action={action}>
         <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
           Program added to wishlist! Confirmation email sent.
         </Alert>

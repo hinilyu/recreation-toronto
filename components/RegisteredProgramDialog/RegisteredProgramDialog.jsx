@@ -89,25 +89,41 @@ const RegisteredProgramDialog = ({ open, handleClose, program, programs }) => {
           <Divider className="mt-4" />
           {/* Selector */}
           <div className="flex w-full justify-center mt-5">
-            <Button
-              className="mx-2 text-xs md:text-sm"
-              variant="outlined"
-              startIcon={<CalendarMonthIcon />}
-              onClick={() => setShowSection("calendar")}
-            >
-              By Program Start Date
-            </Button>
-            <Button
-              className="mx-2 text-xs md:text-sm"
-              variant="outlined"
-              disabled={!programLoaded}
-              startIcon={<LocationOnIcon />}
-              onClick={() => {
-                setShowSection("location");
-              }}
-            >
-              By Location
-            </Button>
+            {showSection === "calendar" ? (
+              <button
+                className="mx-2 text-xs md:text-sm font-satoshi border px-1.5 py-1 rounded border-sky-600 bg-sky-700 text-white hover:bg-transparent hover:text-sky-800"
+                onClick={() => setShowSection("calendar")}
+              >
+                <CalendarMonthIcon className="mr-2" />
+                By Program Start Date
+              </button>
+            ) : (
+              <button
+                className="mx-2 text-xs md:text-sm font-satoshi border px-1.5 py-1 rounded border-sky-600 text-sky-800 hover:bg-sky-700 hover:text-white"
+                onClick={() => setShowSection("calendar")}
+              >
+                <CalendarMonthIcon className="mr-2" />
+                By Program Start Date
+              </button>
+            )}
+
+            {showSection === "location" ? (
+              <button
+                className="mx-2 text-xs md:text-sm font-satoshi border px-1.5 py-1 rounded border-sky-600 bg-sky-700 text-white hover:bg-transparent hover:text-sky-800"
+                onClick={() => setShowSection("location")}
+              >
+                <LocationOnIcon className="mr-2" />
+                By Location
+              </button>
+            ) : (
+              <button
+                className="mx-2 text-xs md:text-sm font-satoshi border px-1.5 py-1 rounded border-sky-600 text-sky-800 hover:bg-sky-700 hover:text-white"
+                onClick={() => setShowSection("location")}
+              >
+                <LocationOnIcon className="mr-2" />
+                By Location
+              </button>
+            )}
           </div>
           {showSection === "location" ? <ShowLocation programs={programs} parentCallback={handleCallback} /> : ""}
           {showSection === "calendar" ? <ShowCalendar programs={programs} /> : ""}

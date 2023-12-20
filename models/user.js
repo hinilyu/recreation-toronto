@@ -17,6 +17,9 @@ const UserSchema = new Schema({
   image: {
     type: String,
   },
+  wishlist_count: {
+    type: Number,
+  },
 });
 
 const User = models.User || model("User", UserSchema);

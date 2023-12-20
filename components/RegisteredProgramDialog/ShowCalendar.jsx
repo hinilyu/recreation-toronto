@@ -81,7 +81,9 @@ const ShowCalendar = ({ programs }) => {
       {showSection === "list" ? (
         <div className="p-5 font-satoshi font-light">
           <div className="flex justify-center">
-            <h1 className="w-full items-start text-left sm:ms-10 ms-5 mt-5 sm:text-lg text-md font-inter font-medium">Select program start date</h1>
+            <h1 className="w-full items-start text-left sm:ms-10 ms-5 lg:mt-5 sm:text-lg text-md font-inter font-medium">
+              Select program start date
+            </h1>
           </div>
           <List className="p-5 font-satoshi font-light">
             {uniqueStartDates.map((date, index) => {
@@ -108,7 +110,7 @@ const ShowCalendar = ({ programs }) => {
       ) : (
         <div className="p-5 font-satoshi font-light">
           <div className="flex justify-center">
-            <h1 className="w-full items-start text-left sm:ms-10 ms-5 mt-5 sm:text-lg text-md font-inter font-extralight">
+            <h1 className="w-full items-start text-left sm:ms-10 ms-5 lg:mt-5 sm:text-lg text-md font-inter font-extralight">
               All programs starting from {selectedDate.split("T")[0]}
               <span className="flex sm:hidden">
                 <div></div>
