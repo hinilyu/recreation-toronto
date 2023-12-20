@@ -31,7 +31,7 @@ export const DELETE = async (req, res) => {
     if (!deletedReminder) {
       return new Response("Reminder not found", { status: 404 });
     } else {
-      const user = await User.findOne({ email: email });
+      const user = await User.findById(userID);
 
       if (!user) {
         return new Response("User does not exist", { status: 404 });
@@ -42,6 +42,7 @@ export const DELETE = async (req, res) => {
 
     return new Response(JSON.stringify(deletedReminder), { status: 200 });
   } catch (error) {
+    console.log(error);
     return new Response("Not able to delete", { status: 500 });
   }
 };

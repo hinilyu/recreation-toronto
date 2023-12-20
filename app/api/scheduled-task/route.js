@@ -8,6 +8,7 @@ export async function GET(req) {
   const now = new Date();
 
   await connectToDB();
+  console.log("running scheduled task");
 
   const reminders = await Reminder.find();
 
