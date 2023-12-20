@@ -75,7 +75,7 @@ const RegisteredProgramPage = ({ params }) => {
       } else if (data.status === 404) {
         setErrorMsg("Error: Program not found / User does not exist");
         setOpenError(true);
-      } else if (data.status === 200) {
+      } else if (data.status === 201) {
         setOpenSuccess(true);
       } else if (data.status === 409) {
         setErrorMsg("You have reached the maximum wishlist items. Delete some before subscribing to new ones.");
