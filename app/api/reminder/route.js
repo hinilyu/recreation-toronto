@@ -55,42 +55,51 @@ export const POST = async (req, res) => {
   console.log(process.env.MAIL_USER);
 
   // send confirmation email
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.MAIL_USER,
-      pass: process.env.MAIL_PASSWORD,
-    },
-  });
+  const sendEmail = () => {
+    return new Promise((resolve, reject) => {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.MAIL_USER,
+          pass: process.env.MAIL_PASSWORD,
+        },
+      });
 
-  const mailOptions = {
-    from: process.env.MAIL_USER,
-    to: email,
-    subject: `Reminder Created: ${programObject["Course Title"]}`,
-    text: `You have successfully set up a reminder on the program ${program["Activity Title"]}: ${program["Course Title"]} \n \
-    \n \
-    The registration date is ${month[regDate.getMonth()]} ${regDate.getDate()}, ${regDate.getFullYear()} 7:00AM\n \
-    \n \
-    We will remind you again 1 day before the registration starts.
-    \n \
-    Note: Registration date for non-resident will be 10 days later than the above date
-    \n \
-    \n \
-    Thank you for using our service
-    \n \
-    https://recreation-toronto.vercel.app/
-    
-`,
+      const mailOptions = {
+        from: process.env.MAIL_USER,
+        to: email,
+        subject: `Reminder Created: ${programObject["Course Title"]}`,
+        text: `You have successfully set up a reminder on the program ${program["Activity Title"]}: ${program["Course Title"]} \n \
+        \n \
+        The registration date is ${month[regDate.getMonth()]} ${regDate.getDate()}, ${regDate.getFullYear()} 7:00AM\n \
+        \n \
+        We will remind you again 1 day before the registration starts.
+        \n \
+        Note: Registration date for non-resident will be 10 days later than the above date
+        \n \
+        \n \
+        Thank you for using our service
+        \n \
+        https://recreation-toronto.vercel.app/
+      `,
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+          reject(error);
+        } else {
+          console.log(`sent to ${email}`);
+          resolve();
+        }
+      });
+    });
   };
 
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log(`sent to ${email}`);
-      return new Response("Success", { status: 200 });
-    }
-  });
-
-  return new Response("Success", { status: 201 });
+  try {
+    await sendEmail();
+    return new Response("Success", { status: 201 });
+  } catch (error) {
+    return new Response("Failed to send email", { status: 500 });
+  }
 };
