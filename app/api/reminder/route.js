@@ -80,6 +80,7 @@ export const POST = async (req, res) => {
         \n \
         Thank you for using our service
         \n \
+        \n\nRegards, \nRecreation Toronto\n
         https://recreation-toronto.vercel.app/
       `,
       };
