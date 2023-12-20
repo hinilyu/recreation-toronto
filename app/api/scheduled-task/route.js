@@ -81,6 +81,9 @@ export async function GET(req) {
       await reminder.save();
     } catch (error) {
       console.error(error);
+      return new Response(JSON.stringify(error), { status: 500 });
     }
   });
+
+  return new Response("All Email Sent", { status: 200 });
 }
