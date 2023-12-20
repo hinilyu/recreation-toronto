@@ -20,7 +20,7 @@ export async function GET(req) {
       const user = await User.findById(reminder.user);
 
       // check if registration day is one day from today
-      const isOneDayBefore = regDate.getDate() >= now.getDate() - 1;
+      const isOneDayBefore = regDate.getDate() <= now.getDate() - 1;
 
       if (isOneDayBefore && reminder.status !== "reminded") {
         // if true, use nodemailer to send an email to remind the user of the registration
