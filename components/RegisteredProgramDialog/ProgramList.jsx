@@ -22,6 +22,7 @@ const ListOfProgram = ({ filteredPrograms }) => {
     "Su, M, Tu, W, Th, F, Sa": "Everyday",
     "Su, W, Th, F, Sa": "Wed to Sun",
     "Su, F, Sa": "Sat to Fri",
+    "Tu, W, Th": "Tue to Thu",
   };
 
   return (
@@ -37,6 +38,11 @@ const ListOfProgram = ({ filteredPrograms }) => {
                   {program.program["Start Hour"]}:
                   {program.program["Start Min"] < 10 ? `0${program.program["Start Min"]}` : program.program["Start Min"]}{" "}
                 </span>
+                {program.program["Spots Available"] > 0 ? (
+                  ""
+                ) : (
+                  <button className="rounded border border-red-300 bg-red-400 text-white px-1">Full</button>
+                )}
               </ListItemButton>
             </Link>
           </ListItem>

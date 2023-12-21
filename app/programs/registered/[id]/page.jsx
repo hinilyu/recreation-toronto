@@ -10,6 +10,8 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { Fragment } from "react";
 import { useSession } from "next-auth/react";
+import Tooltip from "@mui/material";
+import InfoIcon from "@mui/icons-material/Info";
 
 const RegisteredProgramPage = ({ params }) => {
   const [program, setProgram] = useState({});
@@ -24,7 +26,7 @@ const RegisteredProgramPage = ({ params }) => {
     //   return;
     // }
     if (session?.user) {
-      sendEmailRequest();
+      addWishlist();
     } else {
       setErrorMsg("You need to login first.");
       setOpenError(true);
@@ -55,10 +57,10 @@ const RegisteredProgramPage = ({ params }) => {
     </Fragment>
   );
 
-  // handle email registration
-  const sendEmailRequest = async () => {
+  // handle addWishlist
+  const addWishlist = async () => {
     try {
-      const response = await fetch("/api/reminder", {
+      const response = await fetch("/api/add-wishlist", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -86,6 +88,8 @@ const RegisteredProgramPage = ({ params }) => {
 
   const fetchProgram = async () => {
     const response = await fetch(`/api/programs/registered?id=${params.id}`);
+    if (response.status !== 200) {
+    }
     const data = await response.json();
     setProgram(data);
     setIsLoaded(true);
@@ -119,6 +123,7 @@ const RegisteredProgramPage = ({ params }) => {
     "M, W, F": "Mon, Wed and Fri",
     "Su, W, Th, F, Sa": "Wed to Sun",
     "Su, F, Sa": "Sat to Fri",
+    "Tu, W, Th": "Tue to Thu",
   };
   var startMin = "";
   var endMin = "";
@@ -132,18 +137,31 @@ const RegisteredProgramPage = ({ params }) => {
   } else {
     endMin = program["End Min"];
   }
+
+  //handle fees
+  const fees = program.Fees;
+  var feeArray = ["N/A", "N/A"];
+
+  if (fees) {
+    // Remove the square brackets and quotes from the string
+    const cleanedString = fees.replace(/[\[\]"']/g, "");
+
+    // Split the cleaned string into an array
+    feeArray = cleanedString.split(", ");
+  }
+
   // handle status
   var status = "";
   var style = "";
   if (program["Status / Information"] === "This course has started") {
     status = "Course Started";
-    style = "absolute right-8 top-8 border-2 rounded px-2 py-1 text-indigo-700 border-indigo-700 text-xs md:text-base";
+    style = "absolute sm:right-8 top-4 right-4 sm:top-8 border-2 rounded px-2 py-1 text-indigo-700 border-indigo-700 text-xs md:text-base";
   } else if (program["Status / Information"] === "This course is not presently available for Internet Registration.") {
     status = "Internet Registration Not Available";
-    style = "absolute right-8 top-8 border-2 rounded px-2 py-1 text-orange-700 border-orange-700 text-xs md:text-base";
+    style = "absolute sm:right-8 top-4 right-4 sm:top-8 border-2 rounded px-2 py-1 text-orange-700 border-orange-700 text-xs md:text-base";
   } else if (program["Status / Information"] === "This course is open for registration") {
     status = "Open for Registration";
-    style = "absolute right-8 top-8 border-2 rounded px-2 py-1 text-lime-600 border-lime-600 text-xs md:text-base";
+    style = "absolute sm:right-8 top-4 right-4 sm:top-8 border-2 rounded px-2 py-1 text-lime-600 border-lime-600 text-xs md:text-base";
   }
   if (!isLoaded) {
     return (
@@ -165,47 +183,54 @@ const RegisteredProgramPage = ({ params }) => {
           <h1 className="font-light text-xl md:mt-12 mt-6">{program["Activity Title"]}</h1>
           <h1 className="font-bold text-3xl ">{program["Course Title"]}</h1>
           {/* Location */}
-          <h3 className="md:text-lg text-sm bg-slate-200 hover:bg-slate-300 inline-block py-1 px-3 rounded mt-1">
+          <h3 className="md:text-lg sm:text-sm text-xs bg-slate-200 hover:bg-slate-300 inline-block sm:py-1 sm:px-3 rounded mt-1">
             <Link target="_blank" href={`https://www.toronto.ca/data/parks/prd/facilities/complex/${program["Location ID"]}/index.html`}>
               {program["Asset Name"]}
             </Link>
           </h3>
           {/* Datetime */}
-          <h3 className="mt-5 font-light">
+          <h3 className="mt-5 font-light sm:text-base text-sm">
             Every
             <span className="font-medium ms-1 me-1">{weekday[program["Days of The Week"]]}</span>
             {`from ${program["From To"]}`}
           </h3>
           <h3 className="text-lg">{`${program["Start Hour"]}:${startMin} - ${program["End Hour"]}:${endMin}`}</h3>
           {/* Link */}
-          <Link href={program["eFun URL"]}>
-            <button className="bg-blue-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-blue-700 rounded text-sm mt-5">
-              Register on eFun
-            </button>
-          </Link>
-          {regDate <= now ? (
-            <button
-              onClick={handleRemind}
-              className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded text-xs md:text-sm mt-5 ms-5"
-            >
-              Remind me to register
-            </button>
-          ) : (
-            <button
-              onClick={handleRemind}
-              className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded text-xs md:text-sm mt-5 ms-5"
-            >
-              Remind me to register
-            </button>
-          )}
+          <div className="flex">
+            <Link href={program["eFun URL"]}>
+              <button className="bg-blue-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-blue-700 rounded text-xs md:text-sm mt-5">
+                Register on eFun
+              </button>
+            </Link>
+            {regDate <= now ? (
+              <button
+                onClick={handleRemind}
+                className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded text-xs md:text-sm mt-5 ms-5"
+              >
+                Add to Wishlist
+              </button>
+            ) : (
+              <button
+                onClick={handleRemind}
+                className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded text-xs md:text-sm mt-5 ms-5"
+              >
+                Add to Wishlist
+              </button>
+            )}
+          </div>
 
           <div className="font-light leading-7">
             {/* Fee */}
             <h3 className="mt-10">
-              <span className="font-medium">Fees:</span>
-            </h3>
-            <h3>
-              <span className="font-medium">Non-Resident Fees:</span>
+              <span className="font-medium">
+                Resident: <span className="font-light">{feeArray[0] === "$0.00" ? "Free" : feeArray[0]}</span>{" "}
+                <span className="sm:hidden">
+                  <br></br>
+                </span>
+                <span className="hidden sm:inline"> | </span>
+                Non-Resident:
+                <span className="font-light"> {feeArray[1]}</span>
+              </span>
             </h3>
             {/* Age */}
             {program["Max Age"] === "None" ? (
@@ -228,7 +253,7 @@ const RegisteredProgramPage = ({ params }) => {
             </h3>
             <h3 className="mt-3">
               <span className="font-medium">Registration Date: </span>
-              {`${month[regDate.getUTCMonth()]} ${regDate.getUTCDate()}, ${regDate.getUTCFullYear()} 7:00AM`}
+              {`${month[regDate.getUTCMonth()]} ${regDate.getUTCDate()}, ${regDate.getUTCFullYear()} 7:00AM`}{" "}
             </h3>
             <h3>
               <span className="font-medium">Non-Resident Registration Date: </span>
@@ -236,7 +261,9 @@ const RegisteredProgramPage = ({ params }) => {
             </h3>
 
             <h3 className="mt-3">
-              <span className="font-medium">Spots Available:</span>
+              <span className="font-medium">
+                Spots Available: <span className="font-light">{program["Spots Available"] >= 0 ? program["Spots Available"] : "N/A"}</span>
+              </span>
             </h3>
           </div>
           <br></br>
@@ -249,7 +276,7 @@ const RegisteredProgramPage = ({ params }) => {
       </Snackbar>
       <Snackbar open={openSuccess} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical, horizontal }} action={action}>
         <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
-          Program added to wishlist! Confirmation email sent.
+          Program added to wishlist!
         </Alert>
       </Snackbar>
     </div>

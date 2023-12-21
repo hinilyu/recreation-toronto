@@ -130,6 +130,11 @@ const ShowCalendar = ({ programs }) => {
                           {program.program["Start Hour"]}:
                           {program.program["Start Min"] < 10 ? `0${program.program["Start Min"]}` : program.program["Start Min"]}{" "}
                         </span>
+                        {program.program["Spots Available"] > 0 ? (
+                          ""
+                        ) : (
+                          <button className="rounded border border-red-300 bg-red-400 text-white px-1">Full</button>
+                        )}
                       </h3>
 
                       <div className="font-medium mt-1">

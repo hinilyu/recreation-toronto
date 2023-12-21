@@ -12,7 +12,12 @@ export const POST = async (req, res) => {
 
   const programPromises = reminders.map(async (reminder) => {
     const program = await RegisteredProgram.findOne({ Course_ID: reminder.program });
-    return program;
+    const resultObject = {
+      ...program.toObject(),
+      reminderID: reminder._id,
+      reminderStatus: reminder.status,
+    };
+    return resultObject;
   });
 
   const programsInWishlist = await Promise.all(programPromises);

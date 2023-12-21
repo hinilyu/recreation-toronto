@@ -107,7 +107,7 @@ const RegisteredProgramDialog = ({ open, handleClose, program, programs }) => {
               </button>
             )}
 
-            {showSection === "location" ? (
+            {showSection === "location" || showSection === "list" ? (
               <button
                 className="mx-2 text-xs md:text-sm font-satoshi border px-1.5 py-1 rounded border-sky-600 bg-sky-700 text-white hover:bg-transparent hover:text-sky-800"
                 onClick={() => setShowSection("location")}

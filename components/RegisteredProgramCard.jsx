@@ -80,7 +80,11 @@ const ProgramCard = ({ program }) => {
           {icon}
         </div>
         <div>
-          <p className="text-xs">{program.count} programs available</p>
+          {program.hasAvailableSpots ? (
+            <p className="text-xs">{program.count} programs available</p>
+          ) : (
+            <p className="text-xs text-red-500">All Programs Full</p>
+          )}
         </div>
       </div>
 

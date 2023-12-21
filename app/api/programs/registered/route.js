@@ -44,15 +44,23 @@ export const GET = async (request) => {
             count: { $sum: 1 },
             description: { $first: "$Activity Description" },
             category: { $first: "$Program Category" }, // Assuming 'Description' is the same for all occurrences of a title
+            daysOfWeek: { $addToSet: "$Days of The Week" }, // Add this line to gather unique days of the week
+            minAge: { $min: "$Min Age" }, // Add this line for the lowest min age
+            maxAge: { $max: "$Max Age" }, // Add this line for the highest max age
+            hasAvailableSpots: { $max: { $gt: ["$Spots Available", 0] } }, // Check if any program has spots available
           },
         },
       ]);
 
-      const mapResult = result.map(({ _id: title, count, description, category }) => ({
+      const mapResult = result.map(({ _id: title, count, description, category, daysOfWeek, minAge, maxAge, hasAvailableSpots }) => ({
         title,
         count,
         description,
         category,
+        daysOfWeek,
+        minAge,
+        maxAge,
+        hasAvailableSpots,
       }));
 
       return new Response(JSON.stringify(mapResult), { status: 200 });

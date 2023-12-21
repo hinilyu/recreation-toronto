@@ -84,6 +84,27 @@ const Wishlist = () => {
     }
   };
 
+  const handleRemind = async (reminderID, e) => {
+    e.stopPropagation();
+    try {
+      const response = await fetch("/api/add-reminder", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          reminderID,
+        }),
+      });
+      console.log(response);
+      if (response.status === 200) {
+        fetchWishlist();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const deleteReminder = async (programID, e) => {
     e.stopPropagation();
     try {
@@ -194,12 +215,47 @@ const Wishlist = () => {
                       program["Start Hour"]
                     }:${startMin}`}</span>
                   </TableCell>
-                  <TableCell align="right" className="font-satoshi md:text-base">{`${
-                    month[regDate.getUTCMonth()]
-                  } ${regDate.getUTCDate()}, ${regDate.getUTCFullYear()}`}</TableCell>
+                  <TableCell align="right" className="font-satoshi md:text-base">
+                    <span>
+                      <div>
+                        {`${month[regDate.getUTCMonth()]} ${regDate.getUTCDate()}`}
+                        <span className="hidden lg:inline">, {regDate.getUTCFullYear()}</span>
+                      </div>
+                      {program.reminderStatus === "wishlist" ? (
+                        <button
+                          onClick={(e) => handleRemind(program.reminderID, e)}
+                          className="border border-orange-300 bg-orange-400 text-white rounded px-1 hover:bg-transparent hover:text-orange-500 text-sm md:text-base"
+                        >
+                          Remind Me
+                        </button>
+                      ) : (
+                        ""
+                      )}
+                      {program.reminderStatus === "reminder" ? (
+                        <button
+                          disabled
+                          className="border border-green-500 bg-green-600 text-white rounded px-1 hover:bg-transparent hover:text-orange-500 text-xs"
+                        >
+                          Reminder Set
+                        </button>
+                      ) : (
+                        ""
+                      )}
+                      {/* {program.reminderStatus === "reminded" ? (
+                        <button
+                          onClick={() => handleRemind(program.reminderID)}
+                          className="border border-purple-300 bg-purple-500 text-white rounded px-1 text-xs"
+                        >
+                          Reminder Sent
+                        </button>
+                      ) : (
+                        ""
+                      )} */}
+                    </span>
+                  </TableCell>
 
                   <TableCell className="font-satoshi md:text-base" align="right">
-                    {program["Spots Available"] ? program["Spots Available"] : "N/A"}
+                    {program["Spots Available"] >= 0 ? program["Spots Available"] : "N/A"}
                   </TableCell>
                   <TableCell align="center">
                     <div className={style}>{status}</div>

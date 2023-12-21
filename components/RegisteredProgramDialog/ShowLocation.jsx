@@ -15,31 +15,35 @@ const ShowLocation = ({ programs, parentCallback }) => {
   const handleToggleOpen = (markerID) => {
     setOpenID(markerID);
   };
-
-  const onLoad = async (map) => {
+  const onLoad = (map) => {
     const bounds = new google.maps.LatLngBounds();
-    await programs.forEach(({ location }) => bounds.extend({ lat: location.Coordinates[1], lng: location.Coordinates[0] }));
+
+    programs.forEach(({ location }) => {
+      // Check if location exists and has Coordinates property
+      if (location && location.Coordinates) {
+        bounds.extend({ lat: location.Coordinates[1], lng: location.Coordinates[0] });
+      }
+    });
+
     map.fitBounds(bounds);
   };
 
-  useEffect(() => {
-    if (programs.length === 0) {
-      return <div>No Results Found</div>;
-    }
-  }, []);
+  if (!isLoaded && programs.length > 0) {
+    return (
+      <div className="flex justify-center">
+        <CircularProgress />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-[60%] sm:p-10 p-3">
-      {!isLoaded && programs.length > 0 ? (
-        <div className="flex justify-center">
-          <CircularProgress />
-        </div>
-      ) : (
+      {isLoaded && (
         <GoogleMap mapContainerClassName="w-full h-full" onLoad={onLoad}>
           {programs.map((program) => {
             if (!program.location || !program.location._id) {
               // Skip rendering if location or _id is missing
-              return "Map function not available";
+              return null;
             }
             // Check if the ID is already seen, if yes, skip rendering
             if (uniqueIds.has(program.location._id)) {

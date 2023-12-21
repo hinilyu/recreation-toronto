@@ -5,7 +5,7 @@ import User from "@models/user";
 import nodemailer from "nodemailer";
 
 export async function GET(req) {
-  const now = new Date("2023-10-31T00:00:00");
+  const now = new Date();
 
   await connectToDB();
   console.log("running scheduled task");
@@ -16,12 +16,17 @@ export async function GET(req) {
     try {
       const program = await RegisteredProgram.findOne({ Course_ID: reminder.program });
 
+      if(reminder.status === "reminded"){
+        continue
+      }
+
       if (!program) {
         console.error("Program not found for reminder:", reminder);
         continue; // Skip to the next reminder if program is not found
       }
 
       const regDate = new Date(program["Registration Date"]);
+      const month = ["Jan", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
       if (!regDate) {
         console.error("Invalid registration date for program:", program);
@@ -36,9 +41,12 @@ export async function GET(req) {
       }
 
       // check if registration day is one day from today
-      const isOneDayBefore = true;
+      const isOneDayBefore =
+        regDate.getUTCDate() === now.getUTCDate() + 1 &&
+        regDate.getUTCMonth() === now.getUTCMonth() &&
+        regDate.getUTCFullYear() === now.getUTCFullYear();
 
-      if (isOneDayBefore && reminder.status !== "reminded") {
+      if (isOneDayBefore && ) {
         // if true, use nodemailer to send an email to remind the user of the registration
         const transporter = nodemailer.createTransport({
           service: "gmail",
@@ -53,38 +61,24 @@ export async function GET(req) {
           to: user.email, // replace with the actual user's email
           subject: `Reminder: Program Registration Tomorrow - ${program["Course Title"]}`,
           html: `
-                  <style>
-                  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
-                  body {
-                    font-family: 'Inter', sans-serif;
-                  }
-                  .button {
-                    display: inline-block;
-                    padding: 10px 20px;
-                    background-color: #ff9800; /* Orange color */
-                    color: #ffffff; /* White text */
-                    text-decoration: none;
-                    border-radius: 5px;
-                    margin-top: 15px;
-                  }
-                </style>
-                <img src="cid:logo" alt="Recreation Toronto" >
-                <p>Hello,</p>
-                <p>Don't forget to register for the program <a href="${`http://localhost:3000/programs/registered/${program["Course_ID"]}`}">${
-            program["Course Title"]
-          }</a> tomorrow.</p><br/>
-          <a class="button" href="${program["eFun URL"]}" target="_blank">Click Here to Register</a>
-                <br/><br/><br/>
-                <p>Regards,<br>Recreation Toronto</p>
-                
-              `,
-          attachments: [
-            {
-              filename: "logo.svg",
-              path: "assets/images/logo.svg",
-              cid: "logo", // make sure to use the same CID in the <img src="cid:logo"> tag
-            },
-          ],
+          <div style="font-family: Arial, sans-serif; padding: 20px;">
+            <img src="https://recreation-toronto.vercel.app/assets/images/logo.png" alt="Recreation Toronto Logo" style="max-width: 135px; height: auto;">
+            <p style="margin-top: 15px; font-size: 16px;">Hello,</p>
+            <p style="margin-top: 15px; font-size: 16px;">Don't forget to register for the program <a href="${`https://recreation-toronto.vercel.app/programs/registered/${program["Course_ID"]}`}" style="color: #007BFF; text-decoration: underline;">${
+            program["Activity Title"]
+          }: ${program["Course Title"]}</a> tomorrow.</p>
+            <p style="margin-top: 15px; font-size: 16px;">The registration date is ${
+              month[regDate.getUTCMonth()]
+            } ${regDate.getUTCDate()}, ${regDate.getUTCFullYear()} at 7:00 AM.</p>
+           <br/><br/>
+            <p style="margin-top: 15px; font-size: 14px;">Note: Registration date for non-residents will be 10 days later than the above date.</p>
+            <br>
+            <a href="${
+              program["eFun URL"]
+            }" target="_blank" style="display: inline-block; padding: 10px 20px; background-color: #ff9800; color: #000000; text-decoration: none; border-radius: 5px; margin-top: 15px;">Click Here to Register</a>
+            <br/><br/><br/>
+          </div>
+        `,
         };
 
         const info = await transporter.sendMail(mailOptions);
@@ -93,8 +87,8 @@ export async function GET(req) {
       }
 
       // mark the reminder status as reminded
-      // reminder.status = "reminded";
-      // await reminder.save();
+      reminder.status = "reminded";
+      await reminder.save();
     } catch (error) {
       console.error(error);
       return new Response(JSON.stringify(error), { status: 500 });

@@ -48,19 +48,38 @@ const SpecificSearchResult = ({ searchParams, registeredPrograms, dropPrograms }
   const [filteredDropPrograms, setFilteredDropPrograms] = useState([]);
 
   const filterProgram = () => {
-    if (searchParams.keyword) {
-      const keywords = searchParams.keyword.toLowerCase().trim().split(" ");
-      const prog = registeredPrograms.filter((program) => {
+    const keywords = searchParams.keyword.toLowerCase().trim().split(" ");
+    const prog = registeredPrograms
+      .filter((program) => {
         const title = program.title.toLowerCase();
         const description = program.description.toLowerCase();
 
-        // Check if all keywords are present in either title or description
-        const allKeywordsPresent = keywords.every((keyword) => title.includes(keyword) || description.includes(keyword));
+        // Check if program has available spots
+        const hasAvailableSpots = searchParams.searchType === "available" ? program.hasAvailableSpots : true;
 
-        return allKeywordsPresent;
+        // Check if all keywords are present in either title or description
+        const allKeywordsPresent = !searchParams.keyword || keywords.every((keyword) => title.includes(keyword) || description.includes(keyword));
+
+        // Check categories if searchParams.categories is not empty
+        const hasCategories = searchParams.categories?.length > 0;
+        const isInCategories = hasCategories ? searchParams.categories.includes(program.category) : true;
+
+        return allKeywordsPresent && isInCategories && hasAvailableSpots;
+      })
+      .sort((a, b) => {
+        // Sort by relevance, you can customize this based on your criteria
+        if (searchParams.keyword) {
+          const aRelevance = keywords.reduce((count, keyword) => count + a.title.toLowerCase().split(keyword).length - 1, 0);
+          const bRelevance = keywords.reduce((count, keyword) => count + b.title.toLowerCase().split(keyword).length - 1, 0);
+
+          // Sort in descending order
+          return bRelevance - aRelevance;
+        }
+
+        return b.count - a.count;
       });
-      setFilteredPrograms(prog);
-    }
+
+    setFilteredPrograms(prog);
   };
 
   const filterDropProgram = () => {
@@ -85,7 +104,7 @@ const SpecificSearchResult = ({ searchParams, registeredPrograms, dropPrograms }
     <div className="mt-3">
       <div className="mt-5 font-semibold text-lg"></div>
       <h1 className="section_header">
-        Registered Programs on "{searchParams.keyword}"
+        Search Results on Registered Programs
         <Tooltip
           className="ms-2"
           title="Search and register for a variety of programs including camps, swimming lessons, skating & hockey lessons, fitness classes, dances classes and much more."
@@ -97,7 +116,7 @@ const SpecificSearchResult = ({ searchParams, registeredPrograms, dropPrograms }
         <RegisterProgramList data={filteredPrograms} />
       </div>
       <h1 className="section_header">
-        Drop-in Programs on "{searchParams.keyword}"
+        Drop-in Programs about "{searchParams.keyword}"
         <Tooltip
           className="ms-2"
           title="The City of Toronto offers many activities and programs where you can drop in at the scheduled time without prior registration."

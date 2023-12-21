@@ -7,6 +7,9 @@ import { Analytics } from "@vercel/analytics/react";
 export const metadata = {
   title: "Recreation Toronto",
   description: "Tired of using eFun? Here's a new way for discovering Toronto's diverse arts, sports, and general interest programs",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 const RootLayout = ({ children }) => {
@@ -20,6 +23,7 @@ const RootLayout = ({ children }) => {
 
           <main className="app">
             <Nav />
+
             {children}
           </main>
         </Provider>
