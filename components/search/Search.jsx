@@ -186,7 +186,7 @@ const Search = () => {
   }, [searchParams]);
 
   const categories = ["Swimming", "Arts", "Sports", "General", "Dance", "Skating", "Ski", "Camps", "Fitness", "Music"];
-  const ages = ["All Ages", "Early Child (<3 yrs)", "Teens (3-18 yrs)", "Adults (18-65 yrs)", "Elderly (>65 yrs)"];
+  const ages = ["All Ages", "Early Child", "Child", "Youth", "Adults", "Older Adults"];
   const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
   return (

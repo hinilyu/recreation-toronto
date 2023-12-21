@@ -232,11 +232,8 @@ const Wishlist = () => {
                         ""
                       )}
                       {program.reminderStatus === "reminder" ? (
-                        <button
-                          disabled
-                          className="border border-green-500 bg-green-600 text-white rounded px-1 hover:bg-transparent hover:text-orange-500 text-xs"
-                        >
-                          Reminder Set
+                        <button disabled className="border border-green-500 bg-green-600 text-white rounded px-1 text-xs">
+                          1 Day Reminder Set
                         </button>
                       ) : (
                         ""

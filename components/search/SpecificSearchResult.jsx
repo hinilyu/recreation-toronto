@@ -64,7 +64,10 @@ const SpecificSearchResult = ({ searchParams, registeredPrograms, dropPrograms }
         const hasCategories = searchParams.categories?.length > 0;
         const isInCategories = hasCategories ? searchParams.categories.includes(program.category) : true;
 
-        return allKeywordsPresent && isInCategories && hasAvailableSpots;
+        // Check age parameter
+        const isAgeSuitable = checkAgeSuitability(program, searchParams.age);
+
+        return allKeywordsPresent && isInCategories && hasAvailableSpots && isAgeSuitable;
       })
       .sort((a, b) => {
         // Sort by relevance, you can customize this based on your criteria
@@ -80,6 +83,29 @@ const SpecificSearchResult = ({ searchParams, registeredPrograms, dropPrograms }
       });
 
     setFilteredPrograms(prog);
+  };
+
+  // Helper function to check age suitability
+  const checkAgeSuitability = (program, ageParameter) => {
+    const minAge = program.minAge === "None" ? 0 : parseInt(program.minAge);
+    const maxAge = program.maxAge === "None" ? Infinity : parseInt(program.maxAge);
+
+    switch (ageParameter) {
+      case "All Ages":
+        return true;
+      case "Early Child":
+        return maxAge < 36 || (minAge > 0 && minAge < 36); // 36 months = 3 years
+      case "Child":
+        return minAge >= 36 && maxAge < 156;
+      case "Youth":
+        return minAge >= 156 && minAge <= 204; // 36 months = 3 years, 216 months = 18 years
+      case "Adults":
+        return minAge >= 204; // 216 months = 18 years, 780 months = 65 years
+      case "Older Adults":
+        return minAge >= 600; // 780 months = 65 years
+      default:
+        return true;
+    }
   };
 
   const filterDropProgram = () => {
