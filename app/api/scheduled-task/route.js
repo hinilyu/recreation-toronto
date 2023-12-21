@@ -16,8 +16,8 @@ export async function GET(req) {
     try {
       const program = await RegisteredProgram.findOne({ Course_ID: reminder.program });
 
-      if(reminder.status === "reminded"){
-        continue
+      if (reminder.status === "reminded") {
+        continue;
       }
 
       if (!program) {
@@ -46,7 +46,7 @@ export async function GET(req) {
         regDate.getUTCMonth() === now.getUTCMonth() &&
         regDate.getUTCFullYear() === now.getUTCFullYear();
 
-      if (isOneDayBefore && ) {
+      if (isOneDayBefore) {
         // if true, use nodemailer to send an email to remind the user of the registration
         const transporter = nodemailer.createTransport({
           service: "gmail",
