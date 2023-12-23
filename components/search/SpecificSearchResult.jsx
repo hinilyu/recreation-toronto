@@ -159,7 +159,7 @@ const SpecificSearchResult = ({ searchParams, registeredPrograms, dropPrograms }
 
   return (
     <div className="mt-3">
-      <h1 className="text-2xl text-amber-500 font-satoshi">
+      <h1 className="md:text-2xl text-lg text-amber-500 font-satoshi">
         Registered Programs
         <Tooltip
           className="ms-2"
@@ -171,7 +171,7 @@ const SpecificSearchResult = ({ searchParams, registeredPrograms, dropPrograms }
       <div className="sm:h-[500px] h-[250px] overflow-y-auto mt-3">
         <RegisterProgramList data={filteredPrograms} />
       </div>
-      <h1 className="text-2xl text-amber-500 font-inter">
+      <h1 className="md:text-2xl text-lg text-amber-500 font-inter">
         Drop-in Programs
         <Tooltip
           className="ms-2"
