@@ -79,7 +79,7 @@
 }
 
 .head_text {
-  @apply mt-5 text-lg font-bold leading-[1.15] text-black sm:text-xl;
+  @apply sm:mt-5 mt-1 text-lg font-bold leading-[1.15] text-black sm:text-xl;
 }
 
 .section_header {
