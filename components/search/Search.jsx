@@ -193,23 +193,26 @@ const Search = () => {
       {/* Default Search Result */}
       {isSpecificSearch ? (
         <div className="flex flex-col justify-center">
-          <Button
-            variant="outlined"
-            className="mt-5"
-            onClick={() => {
-              setIsSpecificSearch(false);
-              setSearchText("");
-              setSearchParams({
-                keyword: "",
-                searchType: "all",
-                categories: [], // Array to store selected categories
-                age: "All Ages", // Age filter
-                daysOfWeek: [], // Array to store selected days of the week
-              });
-            }}
-          >
-            Reset Search Filter
-          </Button>
+          <h1 className="text-center mt-2 text-xl lg:text-2xl font-bold font-inter align-middle ">
+            Search Results
+            <button
+              className="mt-5 ms-3 text-sm md:text-md border border-blue-300 text-blue-500 hover:bg-slate-200 px-2 rounded"
+              onClick={() => {
+                setIsSpecificSearch(false);
+                setSearchText("");
+                setSearchParams({
+                  keyword: "",
+                  searchType: "all",
+                  categories: [], // Array to store selected categories
+                  age: "All Ages", // Age filter
+                  daysOfWeek: [], // Array to store selected days of the week
+                });
+              }}
+            >
+              Reset
+            </button>
+          </h1>
+
           <SpecificSearchResult searchParams={searchParams} registeredPrograms={registeredPrograms} dropPrograms={dropPrograms} />
         </div>
       ) : (
@@ -232,6 +235,7 @@ const Search = () => {
         }}
       >
         <List className="p-10">
+          <div className="mb-3 font-satoshi text-light text-xs text-amber-600">Search Filters Only Applicable to Registered Programs</div>
           <ListItem disablePadding>
             <FormGroup>
               {/* Search Type */}
@@ -288,7 +292,6 @@ const Search = () => {
             </div>
           </ListItem>
           <Divider className="my-5" />
-
           <div className="w-full flex justify-around mt-10">
             <Button
               variant="outlined"

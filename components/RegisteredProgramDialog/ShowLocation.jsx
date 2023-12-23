@@ -60,7 +60,7 @@ const ShowLocation = ({ programs, parentCallback }) => {
               >
                 {openID === program.location._id ? (
                   <InfoWindowF position={{ lat: program.location.Coordinates[1], lng: program.location.Coordinates[0] }}>
-                    <div className="grid justify-center">
+                    <div className="grid justify-center p-3">
                       <h6 className="font-satoshi text-sm font-semibold">{program.location["Asset Name"]}</h6>
                       <div className="flex justify-center mt-3">
                         <button

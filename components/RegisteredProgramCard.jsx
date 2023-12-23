@@ -73,7 +73,7 @@ const ProgramCard = ({ program }) => {
   program.description = program.description.replace(/<br>/g, "");
 
   return (
-    <div className="program_card hover:cursor-pointer hover:bg-slate-200" onClick={handleClickOpen}>
+    <div className="program_card hover:cursor-pointer hover:bg-slate-200 " onClick={handleClickOpen}>
       <div className="flex justify-between items-start gap-5">
         <div>
           {/* Category Icon */}

@@ -79,11 +79,11 @@
 }
 
 .head_text {
-  @apply mt-5 text-lg font-medium leading-[1.15] text-black sm:text-xl;
+  @apply mt-5 text-lg font-bold leading-[1.15] text-black sm:text-xl;
 }
 
 .section_header {
-  @apply mt-5 text-2xl font-extrabold  text-black sm:text-3xl;
+  @apply mt-5 text-2xl font-light  text-black sm:text-3xl;
 }
 
 .orange_gradient {

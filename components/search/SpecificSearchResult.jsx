@@ -159,9 +159,8 @@ const SpecificSearchResult = ({ searchParams, registeredPrograms, dropPrograms }
 
   return (
     <div className="mt-3">
-      <div className="mt-5 font-semibold text-lg"></div>
-      <h1 className="section_header">
-        Search Results on Registered Programs
+      <h1 className="text-2xl text-amber-500 font-satoshi">
+        Registered Programs
         <Tooltip
           className="ms-2"
           title="Search and register for a variety of programs including camps, swimming lessons, skating & hockey lessons, fitness classes, dances classes and much more."
@@ -172,8 +171,8 @@ const SpecificSearchResult = ({ searchParams, registeredPrograms, dropPrograms }
       <div className="sm:h-[500px] h-[250px] overflow-y-auto mt-3">
         <RegisterProgramList data={filteredPrograms} />
       </div>
-      <h1 className="section_header">
-        Drop-in Programs about "{searchParams.keyword}"
+      <h1 className="text-2xl text-amber-500 font-inter">
+        Drop-in Programs
         <Tooltip
           className="ms-2"
           title="The City of Toronto offers many activities and programs where you can drop in at the scheduled time without prior registration."
