@@ -38,6 +38,8 @@ const ShowCalendar = ({ programs }) => {
     setFilteredPrograms(filtered);
   };
 
+  const weekday1 = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
   // handling data
   const weekday = {
     M: "Mondays",
@@ -91,7 +93,7 @@ const ShowCalendar = ({ programs }) => {
                 <section key={index}>
                   <ListItem disablePadding onClick={() => handleDateClick(date)}>
                     <ListItemButton>
-                      {`${month[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`}
+                      {`${month[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()} ${weekday1[date.getDay()]}`}
                       {date < now ? (
                         <button disabled className="border-indigo-700 border-2 rounded text-indigo-700 px-2 ms-5 text-xs sm:text-sm">
                           Started

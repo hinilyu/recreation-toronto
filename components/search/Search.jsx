@@ -107,14 +107,12 @@ const Search = () => {
 
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setSearchTimeout] = useState(null);
-  const [isApplied, setIsApplied] = useState(false);
   const [searchParams, setSearchParams] = useState({
     keyword: "",
     searchType: "all",
     categories: [], // Array to store selected categories
     age: "All Ages", // Age filter
     daysOfWeek: [], // Array to store selected days of the week
-    startDateBetween: [], // Array to store start date range [startDate, endDate]
   });
   const [open, setOpen] = useState(false);
 
@@ -126,7 +124,10 @@ const Search = () => {
 
     setSearchTimeout(
       setTimeout(() => {
-        setSearchParams({ keyword: e.target.value });
+        setSearchParams((prevParams) => ({
+          ...prevParams,
+          keyword: e.target.value,
+        }));
       }, 500)
     );
   };
@@ -136,7 +137,6 @@ const Search = () => {
       ...prevParams,
       searchType: type,
     }));
-    setIsApplied(true);
   };
 
   const handleCategoryChange = (category) => {
@@ -155,29 +155,17 @@ const Search = () => {
     }));
   };
 
-  const handleStartDateBetweenChange = (startDate, endDate) => {
-    setSearchParams((prevParams) => ({
-      ...prevParams,
-      startDateBetween: [startDate, endDate],
-    }));
-  };
-
   const handleOpen = () => {
     setOpen(true);
   };
-  useEffect(() => {
-    if (isApplied) {
-      setIsSpecificSearch(true);
-    }
-  }, [isApplied]);
 
   useEffect(() => {
     if (
       searchParams.keyword !== "" ||
       searchParams.categories?.length > 0 ||
       searchParams.age !== "All Ages" ||
-      searchParams.daysOfWeek.length > 0 ||
-      searchParams.startDateBetween.length > 0
+      searchParams.daysOfWeek?.length > 0 ||
+      searchParams.searchType == "available"
     ) {
       setIsSpecificSearch(true);
     } else {
@@ -209,7 +197,7 @@ const Search = () => {
             variant="outlined"
             className="mt-5"
             onClick={() => {
-              setIsApplied(false);
+              setIsSpecificSearch(false);
               setSearchText("");
               setSearchParams({
                 keyword: "",
@@ -217,7 +205,6 @@ const Search = () => {
                 categories: [], // Array to store selected categories
                 age: "All Ages", // Age filter
                 daysOfWeek: [], // Array to store selected days of the week
-                startDateBetween: [], // Array to store start date range [startDate, endDate]
               });
             }}
           >
@@ -265,6 +252,7 @@ const Search = () => {
               {/* Categories */}
               {categories.map((category) => (
                 <FormControlLabel
+                  key={category}
                   control={<Checkbox checked={searchParams.categories?.includes(category)} onChange={() => handleCategoryChange(category)} />}
                   label={category}
                 />
@@ -277,6 +265,7 @@ const Search = () => {
             <div className="grid grid-cols-2 w-full">
               {ages.map((age) => (
                 <FormControlLabel
+                  key={age}
                   control={
                     <Checkbox checked={searchParams.age === age} onChange={() => setSearchParams((prevParams) => ({ ...prevParams, age: age }))} />
                   }
@@ -291,6 +280,7 @@ const Search = () => {
               {/* Days of the Week */}
               {weekdays.map((weekday) => (
                 <FormControlLabel
+                  key={weekday}
                   control={<Checkbox checked={searchParams.daysOfWeek?.includes(weekday)} onChange={() => handleDaysOfWeekChange(weekday)} />}
                   label={weekday}
                 />
@@ -298,32 +288,24 @@ const Search = () => {
             </div>
           </ListItem>
           <Divider className="my-5" />
-          <ListItem>
-            {" "}
-            {/* Start Date Between */}
-            {/* You can use DatePicker or any other input for date selection */}
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <div className="flex justify-center w-full">
-                <DatePicker
-                  label="Start Date Between"
-                  value={searchParams.startDateBetween && searchParams.startDateBetween[0]}
-                  onChange={(date) => handleStartDateBetweenChange(date, searchParams.startDateBetween[1])}
-                />
-              </div>
-            </LocalizationProvider>
-            {/* Similar input for End Date */}
-          </ListItem>
+
           <div className="w-full flex justify-around mt-10">
             <Button
               variant="outlined"
               onClick={() => {
-                setIsApplied(true);
+                setIsSpecificSearch(true);
                 setOpen(false);
               }}
             >
               Apply
             </Button>
-            <Button variant="outlined" onClick={() => setIsApplied(false)}>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                setIsSpecificSearch(false);
+                setOpen(false);
+              }}
+            >
               Reset
             </Button>
           </div>

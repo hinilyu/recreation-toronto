@@ -67,8 +67,18 @@ const SpecificSearchResult = ({ searchParams, registeredPrograms, dropPrograms }
         // Check age parameter
         const isAgeSuitable = checkAgeSuitability(program, searchParams.age);
 
-        return allKeywordsPresent && isInCategories && hasAvailableSpots && isAgeSuitable;
+        // Check days of the week
+        let hasSelectedDays;
+        if (searchParams.daysOfWeek?.length > 0) {
+          const selectedDaysAbbreviations = convertToAbbreviations(searchParams.daysOfWeek);
+          hasSelectedDays = checkDaysOfWeek(program, selectedDaysAbbreviations);
+        } else {
+          hasSelectedDays = true;
+        }
+
+        return allKeywordsPresent && isInCategories && hasAvailableSpots && isAgeSuitable && hasSelectedDays;
       })
+
       .sort((a, b) => {
         // Sort by relevance, you can customize this based on your criteria
         if (searchParams.keyword) {
@@ -106,6 +116,27 @@ const SpecificSearchResult = ({ searchParams, registeredPrograms, dropPrograms }
       default:
         return true;
     }
+  };
+
+  // Helper function to convert full day names to abbreviations
+  const convertToAbbreviations = (fullDayNames) => {
+    const dayMap = {
+      Sunday: "Su",
+      Monday: "M",
+      Tuesday: "Tu",
+      Wednesday: "W",
+      Thursday: "Th",
+      Friday: "F",
+      Saturday: "Sa",
+    };
+
+    return fullDayNames.map((fullDay) => dayMap[fullDay]);
+  };
+
+  // Helper function to check days of the week
+  const checkDaysOfWeek = (program, selectedDaysOfWeek) => {
+    const programDays = [].concat(...program.daysOfWeek.map((day) => day.split(",").map((d) => d.trim())));
+    return selectedDaysOfWeek.some((day) => programDays.includes(day));
   };
 
   const filterDropProgram = () => {

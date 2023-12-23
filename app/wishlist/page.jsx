@@ -21,10 +21,13 @@ import { Button } from "@mui/material";
 
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import DeleteIcon from "@mui/icons-material/Delete";
-import IosShareIcon from "@mui/icons-material/IosShare";
 
 const Wishlist = () => {
   const { data: session, status } = useSession();
+
+  if (!session?.user) {
+    return <div className="mt-5 font-inter">You need to login first</div>;
+  }
 
   const [programs, setPrograms] = useState([]);
 
@@ -34,6 +37,7 @@ const Wishlist = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const vertical = "top";
   const horizontal = "center";
+  const now = new Date();
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -221,7 +225,7 @@ const Wishlist = () => {
                         {`${month[regDate.getUTCMonth()]} ${regDate.getUTCDate()}`}
                         <span className="hidden lg:inline">, {regDate.getUTCFullYear()}</span>
                       </div>
-                      {program.reminderStatus === "wishlist" ? (
+                      {program.reminderStatus === "wishlist" && regDate > now ? (
                         <button
                           onClick={(e) => handleRemind(program.reminderID, e)}
                           className="border border-orange-300 bg-orange-400 text-white rounded px-1 hover:bg-transparent hover:text-orange-500 text-sm md:text-base"
@@ -231,7 +235,7 @@ const Wishlist = () => {
                       ) : (
                         ""
                       )}
-                      {program.reminderStatus === "reminder" ? (
+                      {program.reminderStatus === "reminder" && regDate > now ? (
                         <button disabled className="border border-green-500 bg-green-600 text-white rounded px-1 text-xs">
                           1 Day Reminder Set
                         </button>
