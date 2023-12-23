@@ -88,29 +88,31 @@ const DropinProgramDialog = ({ open, handleClose, program }) => {
         </Button>
         <div className="h-[85dvh] ">
           {/* Title and Description */}
-          <div className="sm:px-10 px-3 mt-20">
-            <h1 className="font-light text-xl md:mt-20 mt-10">{program["Category"]}</h1>
-            <h1 className="font-bold text-3xl ">{program["Course Title"]}</h1>
-            {/* Location */}
-            <h3 className="text-sm md:text-lg bg-slate-200 hover:bg-slate-300 inline-block py-1 px-3 rounded mt-1">
+          <div className="mt-20">
+            <div className="px-10">
+              <h1 className="font-light text-xl md:mt-20 mt-10">{program["Category"]}</h1>
+              <h1 className="font-bold text-3xl ">{program["Course Title"]}</h1>
+              {/* Location */}
+              <h3 className="text-sm md:text-lg bg-slate-200 hover:bg-slate-300 inline-block py-1 px-3 rounded mt-1">
+                <Link target="_blank" href={`https://www.toronto.ca/data/parks/prd/facilities/complex/${locationDetails["Location ID"]}/index.html`}>
+                  {locationDetails["Asset Name"]}
+                </Link>
+              </h3>
+              {/* Datetime */}
+              <h3 className="mt-5 font-light">{`${month[startDate.getMonth()]} ${startDate.getDate()}, ${startDate.getFullYear()}`}</h3>
+              <h3 className="text-lg">{`${program["Start Hour"]}:${startMin} - ${program["End Hour"]}:${endMin}`}</h3>
+              {/* Age */}
+              <h3 className="mt-5">
+                <span className="font-medium">Age: </span>
+                {`${age}`}
+              </h3>
+              {/* Link */}
               <Link target="_blank" href={`https://www.toronto.ca/data/parks/prd/facilities/complex/${locationDetails["Location ID"]}/index.html`}>
-                {locationDetails["Asset Name"]}
+                <button className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded text-sm mt-5">
+                  Check Details on Official Website
+                </button>
               </Link>
-            </h3>
-            {/* Datetime */}
-            <h3 className="mt-5 font-light">{`${month[startDate.getMonth()]} ${startDate.getDate()}, ${startDate.getFullYear()}`}</h3>
-            <h3 className="text-lg">{`${program["Start Hour"]}:${startMin} - ${program["End Hour"]}:${endMin}`}</h3>
-            {/* Age */}
-            <h3 className="mt-5">
-              <span className="font-medium">Age: </span>
-              {`${age}`}
-            </h3>
-            {/* Link */}
-            <Link target="_blank" href={`https://www.toronto.ca/data/parks/prd/facilities/complex/${locationDetails["Location ID"]}/index.html`}>
-              <button className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 border border-orange-700 rounded text-sm mt-5">
-                Check Details on Official Website
-              </button>
-            </Link>
+            </div>
 
             <div className="flex justify-center w-[100%] max-w-[800px] md:h-[600px] h-[400px] sm:p-10 p-3">
               {!isLoaded ? (
