@@ -88,7 +88,7 @@ const DropinProgramDialog = ({ open, handleClose, program }) => {
         </Button>
         <div className="h-[85dvh] ">
           {/* Title and Description */}
-          <div className="px-10 mt-20">
+          <div className="sm:px-10 px-3 mt-20">
             <h1 className="font-light text-xl md:mt-20 mt-10">{program["Category"]}</h1>
             <h1 className="font-bold text-3xl ">{program["Course Title"]}</h1>
             {/* Location */}
