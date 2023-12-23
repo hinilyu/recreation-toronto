@@ -79,7 +79,7 @@ const ShowCalendar = ({ programs }) => {
   }, [programs]);
 
   return (
-    <div className="p-5 font-satoshi font-light">
+    <div className="sm:p-5 font-satoshi font-light">
       {showSection === "list" ? (
         <div className="p-5 font-satoshi font-light">
           <div className="flex justify-center">
