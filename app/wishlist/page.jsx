@@ -199,7 +199,7 @@ const Wishlist = () => {
               var style = "";
               if (program["Status / Information"] === "This course has started") {
                 status = "Course Started";
-                style = "border rounded py-1 text-indigo-700 border-indigo-700 text-xs md:text-sm";
+                style = "border rounded p-1 text-indigo-700 border-indigo-700 text-xs md:text-sm";
               } else if (program["Status / Information"] === "This course is not presently available for Internet Registration.") {
                 status = "Internet Registration Not Available";
                 style = "border rounded py-1 text-orange-700 border-orange-700 text-xs md:text-sm";
