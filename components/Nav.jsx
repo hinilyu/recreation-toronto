@@ -37,9 +37,7 @@ const Nav = () => {
             <button type="button" onClick={signOut} className="outline_btn">
               Sign Out
             </button>
-            <Link href="/profile">
-              <Image src={session?.user.image} width={37} height={37} className="rounded-full" alt="profile" />
-            </Link>
+            <Image src={session?.user.image} width={37} height={37} className="rounded-full" alt="profile" />
           </div>
         ) : (
           <>
@@ -61,21 +59,19 @@ const Nav = () => {
               src={session?.user.image}
               width={37}
               height={37}
-              className="rounded-full"
+              className="rounded-full hover:cursor-pointer"
               alt="profile"
               onClick={() => setToggleDropdown((prev) => !prev)}
             />
             {toggleDropdown && (
-              <div className="dropdown">
-                <Link href="/wishlist" className="dropdown_link" onClick={() => setToggleDropdown(false)}>
+              <div className="dropdown z-20">
+                <Link href="/wishlist" className="black_btn w-full" onClick={() => setToggleDropdown(false)}>
                   My Wishlist
                 </Link>
-                <Link href="/create-prompt" className="dropdown_link" onClick={() => setToggleDropdown(false)}>
-                  Create Prompt
-                </Link>
+
                 <button
                   type="button"
-                  className="mt-5 w-full black_btn"
+                  className="mt-5 w-full outline_btn"
                   onClick={() => {
                     setToggleDropdown(false);
                     signOut();
