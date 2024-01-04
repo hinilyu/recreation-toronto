@@ -6,6 +6,7 @@ const { MongoClient } = require("mongodb");
 const packageId = "da46e4ac-d4ab-4b1c-b139-6362a0a43b3c";
 
 let dropInUrl = "";
+let csvText = "";
 const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
 
@@ -58,6 +59,7 @@ export async function GET(req) {
 
             const newCollection = database.collection("dropinprograms");
             await newCollection.insertMany(results.data);
+            csvText = results.data;
 
             return new Response(JSON.stringify(results.data), { status: 200 });
           } catch (error) {
