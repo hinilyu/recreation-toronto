@@ -1,7 +1,17 @@
-const https = require("https"),
-  packageId = "da46e4ac-d4ab-4b1c-b139-6362a0a43b3c";
+import { error } from "console";
 
-// promise to retrieve the package
+const https = require("https");
+// const fetch = require("node-fetch");
+const Papa = require("papaparse");
+const { MongoClient } = require("mongodb");
+
+const packageId = "da46e4ac-d4ab-4b1c-b139-6362a0a43b3c";
+
+let dropInUrl = "";
+let csvText = "";
+const uri = process.env.MONGODB_URI;
+const client = new MongoClient(uri);
+
 const getPackage = new Promise((resolve, reject) => {
   https.get(`https://ckan0.cf.opendata.inter.prod-toronto.ca/api/3/action/package_show?id=${packageId}`, (response) => {
     let dataChunks = [];
@@ -19,50 +29,53 @@ const getPackage = new Promise((resolve, reject) => {
   });
 });
 
-getPackage
-  .then((pkg) => {
-    // this is the metadata of the package
-    console.log(pkg);
-  })
-  .catch((error) => {
-    console.error(error);
-  });
-// since this package has resources in the datastore, one can get the data rather than just the metadata of the resources
-// promise to retrieve data of a datastore resource
-// const getDatastoreResource = (resource) =>
-//   new Promise((resolve, reject) => {
-//     https.get(`https://ckan0.cf.opendata.inter.prod-toronto.ca/api/3/action/datastore_search?id=${resource["id"]}`, (response) => {
-//       let dataChunks = [];
-//       response
-//         .on("data", (chunk) => {
-//           dataChunks.push(chunk);
-//         })
-//         .on("end", () => {
-//           let data = Buffer.concat(dataChunks);
-//           resolve(JSON.parse(data.toString())["result"]["records"]);
-//         })
-//         .on("error", (error) => {
-//           reject(error);
-//         });
-//     });
-//   });
+export async function GET(req) {
+  try {
+    // connect mongoDB
+    await client.connect();
 
-// get the package information again
-// getPackage
-//   .then((package) => {
-//     // get the datastore resources for the package
-//     let datastoreResources = package["resources"].filter((r) => r.datastore_active);
+    // get data url
+    await getPackage
+      .then((pkg) => {
+        // this is the metadata of the package
+        const dropInResource = pkg.resources.find((resource) => resource.name === "Drop-in.csv");
+        if (dropInResource) {
+          dropInUrl = dropInResource.url;
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
 
-//     // retrieve the first datastore resource as an example
-//     getDatastoreResource(datastoreResources[0])
-//       .then((resource) => {
-//         // this is the actual data of the resource
-//         //console.log(resource)
-//       })
-//       .catch((error) => {
-//         console.error(error);
-//       });
-//   })
-//   .catch((error) => {
-//     console.error(error);
-//   });
+    if (dropInUrl) {
+      const csvResponse = await fetch(dropInUrl, { cache: "no-store" });
+      const csvText = await csvResponse.text();
+
+      Papa.parse(csvText, {
+        header: true,
+        dynamicTyping: true,
+        complete: async function (results) {
+          try {
+            const database = client.db("recreation_toronto");
+            database.collection("dropinprograms").drop();
+
+            const newCollection = database.collection("dropinprograms");
+            await newCollection.insertMany(results.data);
+
+            return new Response("OK", { status: 200 });
+          } catch (error) {
+            console.log(error);
+            return new Response(error, { status: 500 });
+          } finally {
+            await client.close();
+          }
+        },
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return new Response(error, { status: 500 });
+  }
+
+  return new Response("ok", { status: 200 });
+}

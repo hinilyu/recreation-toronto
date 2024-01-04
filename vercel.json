@@ -3,6 +3,10 @@
     {
       "path": "/api/scheduled-task",
       "schedule": "0 10 * * *"
+    },
+    {
+      "path": "/api/scheduled-updateDatabase",
+      "schedule": "0 9 * * *"
     }
   ]
 }
