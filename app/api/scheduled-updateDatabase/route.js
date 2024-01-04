@@ -1,5 +1,3 @@
-import { error } from "console";
-
 const https = require("https");
 // const fetch = require("node-fetch");
 const Papa = require("papaparse");
@@ -8,7 +6,6 @@ const { MongoClient } = require("mongodb");
 const packageId = "da46e4ac-d4ab-4b1c-b139-6362a0a43b3c";
 
 let dropInUrl = "";
-let csvText = "";
 const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
 
@@ -62,7 +59,7 @@ export async function GET(req) {
             const newCollection = database.collection("dropinprograms");
             await newCollection.insertMany(results.data);
 
-            return new Response("OK", { status: 200 });
+            return new Response(JSON.stringify(results.data), { status: 200 });
           } catch (error) {
             console.log(error);
             return new Response(error, { status: 500 });
@@ -77,5 +74,5 @@ export async function GET(req) {
     return new Response(error, { status: 500 });
   }
 
-  return new Response("ok", { status: 200 });
+  return new Response(JSON.stringify(dropInUrl), { status: 200 });
 }
