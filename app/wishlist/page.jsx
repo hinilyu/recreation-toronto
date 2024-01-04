@@ -286,6 +286,9 @@ const Wishlist = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <div className="mt-2 flex justify-center w-full">
+        <p className="font-satoshi text-xs text-center">Items will be automatically removed when program expires.</p>
+      </div>
       <Snackbar open={openError} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical, horizontal }} action={action}>
         <Alert onClose={handleClose} severity="warning">
           {errorMsg}

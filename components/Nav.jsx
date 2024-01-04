@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 
+import GitHubIcon from "@mui/icons-material/GitHub";
+
 const Nav = () => {
   const { data: session } = useSession();
 
@@ -29,6 +31,9 @@ const Nav = () => {
 
       {/* {Desktop Navigation} */}
       <div className="sm:flex hidden">
+        <Link href={"https://github.com/hinilyu/recreation-toronto"} title="GitHub" target="_blank">
+          <GitHubIcon className="w-[37px] h-[37px] mr-5" />
+        </Link>
         {session?.user ? (
           <div className="flex gap-3 md:gap-5">
             <Link href="/wishlist" className="black_btn">
@@ -53,6 +58,9 @@ const Nav = () => {
 
       {/* Mobile Navigation */}
       <div className="sm:hidden flex relative">
+        <Link href={"https://github.com/hinilyu/recreation-toronto"} title="GitHub" target="_blank">
+          <GitHubIcon className="w-[37px] h-[37px] mr-2" />
+        </Link>
         {session?.user ? (
           <div className="flex">
             <Image
@@ -61,6 +69,7 @@ const Nav = () => {
               height={37}
               className="rounded-full hover:cursor-pointer"
               alt="profile"
+              title="profile"
               onClick={() => setToggleDropdown((prev) => !prev)}
             />
             {toggleDropdown && (

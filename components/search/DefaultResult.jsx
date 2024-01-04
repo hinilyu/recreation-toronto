@@ -73,7 +73,7 @@ const DefaultResult = ({ registeredPrograms, dropPrograms, parentSetUseCurrentLo
   }, []);
 
   return (
-    <section className="mt-3">
+    <section className="mx-3">
       <h1 className="section_header">
         Registered Programs You May Like
         <Tooltip
@@ -119,7 +119,7 @@ const DefaultResult = ({ registeredPrograms, dropPrograms, parentSetUseCurrentLo
           </Button>
         )}
       </h1>
-      <div className="sm:h-[500px] h-[300px] overflow-y-auto mt-3">
+      <div className="sm:h-[500px] h-[300px] overflow-y-auto mt-3 mb-10">
         {useCurrentLocation ? (
           <DropinProgramNearbyList data={dropPrograms} useCurrentLocation={useCurrentLocation} />
         ) : (

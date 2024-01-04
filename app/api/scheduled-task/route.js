@@ -21,7 +21,8 @@ export async function GET(req) {
       }
 
       if (!program) {
-        console.error("Program not found for reminder:", reminder);
+        console.error("Program expired or not found for reminder:", reminder);
+        Reminder.deleteOne({ _id: reminder._id });
         continue; // Skip to the next reminder if program is not found
       }
 

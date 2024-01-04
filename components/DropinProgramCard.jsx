@@ -33,7 +33,6 @@ const ProgramCard = ({ program }) => {
     setOpen(false);
   };
 
-
   var icon = "";
   if (program.Category === "Swimming") {
     icon = <PoolIcon style={{ color: "CornflowerBlue" }} />;
@@ -72,14 +71,24 @@ const ProgramCard = ({ program }) => {
       <h2 className="font-inter text-xs ">{program.locationDetails[0] ? program.locationDetails[0]["Asset Name"] : ""}</h2>
       <h2 className="font-inter text-sm mt-3">
         {today.getDate() == datetime.getDate() && today.getMonth() === datetime.getMonth() ? (
-          <div>Today</div>
+          <div>
+            Today
+            <span className="font-inter text-md mt-1 font-semibold sm:hidden inline">
+              {" "}
+              | {datetime.getHours()}:{datetime.getMinutes() < 10 ? <span>0{datetime.getMinutes()}</span> : <span>{datetime.getMinutes()}</span>}
+            </span>
+          </div>
         ) : (
           <div>
             {weekday[datetime.getDay()]}, {month[datetime.getMonth()]} {datetime.getDate()}
+            <span className="font-inter text-md mt-1 font-semibold sm:hidden inline">
+              {" "}
+              | {datetime.getHours()}:{datetime.getMinutes() < 10 ? <span>0{datetime.getMinutes()}</span> : <span>{datetime.getMinutes()}</span>}
+            </span>
           </div>
         )}
       </h2>
-      <h2 className="font-inter text-md mt-1 font-semibold">
+      <h2 className="font-inter text-md mt-1 font-semibold sm:flex hidden">
         {datetime.getHours()}:{datetime.getMinutes() < 10 ? <span>0{datetime.getMinutes()}</span> : <span>{datetime.getMinutes()}</span>}
       </h2>
 

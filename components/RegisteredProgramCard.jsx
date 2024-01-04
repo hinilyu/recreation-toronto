@@ -90,7 +90,7 @@ const ProgramCard = ({ program }) => {
 
       {/* Title */}
       <h1 className="font-inter text-lg font-semibold mt-2 line-clamp-2">{program.title}</h1>
-      <p className="font-satoshi text-sm line-clamp-5 hover:overflow-auto select-none h-[100px]">{program.description}</p>
+      <p className="font-satoshi text-sm line-clamp-5 hover:overflow-auto select-none h-[50px] sm:h-[100px]">{program.description}</p>
 
       <RegisteredProgramDialog open={open} handleClose={handleClose} program={program} programs={programs} />
     </div>
