@@ -56,6 +56,7 @@ export async function GET(req) {
           try {
             const database = client.db("recreation_toronto");
             database.collection("dropinprograms").drop();
+            console.log(database, uri);
 
             const newCollection = database.collection("dropinprograms");
             await newCollection.insertMany(results.data);
