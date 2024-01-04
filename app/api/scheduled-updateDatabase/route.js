@@ -76,5 +76,5 @@ export async function GET(req) {
     return new Response(error, { status: 500 });
   }
 
-  return new Response(JSON.stringify(dropInUrl), { status: 200 });
+  return new Response(JSON.stringify(csvText), { status: 200 });
 }
