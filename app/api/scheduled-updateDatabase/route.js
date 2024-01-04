@@ -60,7 +60,7 @@ export async function GET(req) {
 
             const newCollection = database.collection("dropinprograms");
             await newCollection.insertMany(results.data);
-            csvText = results.data;
+            csvText = uri;
 
             return new Response(JSON.stringify(results.data), { status: 200 });
           } catch (error) {
