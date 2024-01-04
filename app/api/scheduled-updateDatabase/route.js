@@ -47,7 +47,7 @@ export async function GET(req) {
 
     if (dropInUrl) {
       const csvResponse = await fetch(dropInUrl, { cache: "no-store" });
-      const csvText = await csvResponse.text();
+      csvText = await csvResponse.text();
 
       Papa.parse(csvText, {
         header: true,
