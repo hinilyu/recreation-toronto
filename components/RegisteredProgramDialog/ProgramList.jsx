@@ -26,7 +26,7 @@ const ListOfProgram = ({ filteredPrograms }) => {
   };
 
   return (
-    <List className="p-5 font-satoshi font-light">
+    <List className="p-5 font-satoshi font-light text-xs sm:text-base">
       {filteredPrograms.map((program) => (
         <section>
           <ListItem disablePadding key={program.program._id}>
