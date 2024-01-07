@@ -110,7 +110,7 @@ const SpecificSearchResult = ({ searchParams, registeredPrograms, dropPrograms }
       case "Youth":
         return minAge >= 156 && minAge <= 204; // 36 months = 3 years, 216 months = 18 years
       case "Adults":
-        return minAge >= 204; // 216 months = 18 years, 780 months = 65 years
+        return minAge >= 180; // 216 months = 18 years, 780 months = 65 years
       case "Older Adults":
         return minAge >= 600; // 780 months = 65 years
       default:
