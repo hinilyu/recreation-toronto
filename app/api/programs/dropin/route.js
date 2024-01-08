@@ -34,7 +34,7 @@ export async function POST(req, res) {
             spherical: true,
           },
         },
-        { $limit: 2 },
+        { $limit: 10 },
       ]);
 
       const locationIds = closestLocations.map((location) => location["Location ID"]);
@@ -81,7 +81,7 @@ export async function POST(req, res) {
             "Start Date Time": { $gte: today.toJSON(), $lt: weeklater.toJSON() },
           },
         },
-        { $sample: { size: 20 } },
+        { $sample: { size: 100 } },
         {
           $sort: {
             "Start Date Time": 1, // 1 for ascending order, -1 for descending order

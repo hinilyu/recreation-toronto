@@ -42,7 +42,6 @@ const Search = () => {
       setRegisteredPrograms(data);
       const trimmed = data.splice(1, 20);
       setTrimmedRegPrograms(trimmed);
-      console.log(trimmed);
     } else {
       setRegisteredPrograms("error");
     }
