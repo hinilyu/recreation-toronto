@@ -8,7 +8,7 @@ export const metadata = {
   title: "Recreation Toronto",
   description: "Tired of using eFun? Here's a new way for discovering Toronto's diverse arts, sports, and general interest programs",
   icons: {
-    icon: "/logo.png",
+    icon: "/assets/logo.png",
   },
 };
 
